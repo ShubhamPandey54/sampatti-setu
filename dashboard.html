@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMPATTI-SETU | Delhi Police Citizen Portal</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Leaflet JS & CSS for Actual Working Interactive Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- jsPDF for Actual Working PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        govblue: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 800: '#1e40af', 900: '#1e3a8a' },
+                        govred: '#dc2626',
+                        govsaffron: '#ea580c'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .view-section { display: none; }
+        .active-view { display: block; animation: fadeUp 0.3s ease-out forwards; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .loader { border-top-color: #1e3a8a; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex h-full z-20 shadow-sm shrink-0">
+        <!-- Logo Area -->
+        <div class="p-5 flex items-center space-x-3 border-b border-slate-100">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Delhi_Police_Logo.png/120px-Delhi_Police_Logo.png" alt="Delhi Police" class="w-10 h-12 object-contain">
+            <div>
+                <h1 class="font-extrabold text-lg text-govblue-900 tracking-tight leading-none">SAMPATTI-SETU</h1>
+                <p class="text-xs text-slate-500 font-bold mt-0.5">सम्पत्ति सेतु</p>
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="p-4 flex-grow overflow-y-auto">
+            <p class="text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest px-2">Citizen Portal</p>
+            <nav class="space-y-1">
+                <a href="#" onclick="showView('dashboard-view')" class="flex items-center space-x-3 bg-govblue-50 text-govblue-900 px-4 py-3 rounded-lg font-bold border-l-4 border-govblue-900 transition">
+                    <i class="fa-solid fa-house w-5 text-center"></i> <span class="text-sm">Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 text-slate-500 hover:bg-slate-50 hover:text-govblue-900 px-4 py-3 rounded-lg font-semibold transition border-l-4 border-transparent">
+                    <i class="fa-solid fa-folder-open w-5 text-center"></i> <span class="text-sm">My Cases</span>
+                </a>
+                <a href="#" onclick="showView('track-view')" class="flex items-center space-x-3 text-slate-500 hover:bg-slate-50 hover:text-govblue-900 px-4 py-3 rounded-lg font-semibold transition border-l-4 border-transparent">
+                    <i class="fa-solid fa-magnifying-glass-location w-5 text-center"></i> <span class="text-sm">Smart Tracking</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 text-slate-500 hover:bg-slate-50 hover:text-govblue-900 px-4 py-3 rounded-lg font-semibold transition border-l-4 border-transparent">
+                    <i class="fa-solid fa-map-location-dot w-5 text-center"></i> <span class="text-sm">Case Map</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 text-slate-500 hover:bg-slate-50 hover:text-govblue-900 px-4 py-3 rounded-lg font-semibold transition border-l-4 border-transparent">
+                    <i class="fa-solid fa-bell w-5 text-center"></i> <span class="text-sm">Alerts</span>
+                    <span class="ml-auto bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">1</span>
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Bottom Settings/Logout -->
+        <div class="p-4 border-t border-slate-100">
+            <a href="#" class="flex items-center space-x-3 text-slate-500 hover:text-red-600 px-4 py-2 rounded-lg font-semibold transition">
+                <i class="fa-solid fa-right-from-bracket w-5 text-center"></i> <span class="text-sm">Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden relative bg-slate-50/50">
+        
+        <!-- Top Header -->
+        <header class="bg-white h-[72px] border-b border-slate-200 flex items-center justify-between px-6 lg:px-10 shrink-0 shadow-sm z-10">
+            <h2 id="page-title" class="text-xl font-extrabold text-slate-800 tracking-tight">Citizen Dashboard</h2>
+            
+            <div class="flex items-center space-x-6">
+                <button class="text-slate-400 hover:text-govblue-900 transition relative">
+                    <i class="fa-regular fa-bell text-xl"></i>
+                    <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+                <div class="flex items-center space-x-3 border-l border-slate-200 pl-6 cursor-pointer">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-bold text-slate-800 leading-tight">Rahul Kumar</p>
+                        <p class="text-[10px] font-bold text-green-600 uppercase tracking-wider"><i class="fa-solid fa-shield-check"></i> Identity Verified</p>
+                    </div>
+                    <div class="h-10 w-10 rounded-full bg-govblue-50 border border-govblue-200 flex items-center justify-center text-govblue-800 font-bold shadow-sm">
+                        RK
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable View Container -->
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10" id="main-scroll-area">
+
+            <!-- VIEW 1: DASHBOARD -->
+            <div id="dashboard-view" class="view-section active-view max-w-6xl mx-auto">
+                
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900">Report an Incident</h2>
+                    <p class="text-slate-500 mt-1 text-sm">Select the nature of the incident to interact with the Smart Asset Matching Grid.</p>
+                </div>
+
+                <!-- 3 Options Horizontally -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    
+                    <!-- 1. Stolen Item -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-lg transition-all cursor-pointer border-t-4 border-t-red-500 group" onclick="window.location.href='stolen-property.html'">
+                        <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center text-red-600 mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-mask text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900">Item Stolen</h3>
+                        <p class="text-sm text-slate-500 mt-2 mb-4 h-10">Report a theft or snatching. Triggers mandatory active police investigation.</p>
+                        <span class="inline-block bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded font-bold">File e-FIR</span>
+                    </div>
+
+                    <!-- 2. Lost Item (Restored exact text and routing) -->
+                    <div class="bg-white rounded-xl shadow-md border-2 border-govblue-500 p-6 hover:shadow-xl transition-all cursor-pointer border-t-4 border-t-govblue-500 group relative transform hover:-translate-y-1" onclick="showView('triage-view', 'Lost Property Evaluation')">
+                        <div class="absolute top-4 right-4 text-govblue-500"><i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="w-12 h-12 bg-govblue-50 rounded-lg flex items-center justify-center text-govblue-600 mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-box-open text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900">Item Lost</h3>
+                        <p class="text-sm text-slate-500 mt-2 mb-4 h-10">Misplaced your belongings? Report it to activate the AI Malkhana matching grid.</p>
+                        <span class="inline-block bg-govblue-600 text-white text-xs px-3 py-1 rounded font-bold shadow">Start Report</span>
+                    </div>
+
+                    <!-- 3. Found Item -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-lg transition-all cursor-pointer border-t-4 border-t-green-500 group" onclick="window.location.href='found-property.html'">
+                        <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center text-green-600 mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-handshake-angle text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900">Item Found</h3>
+                        <p class="text-sm text-slate-500 mt-2 mb-4 h-10">Safely log recovered items to the grid as an anonymous Good Samaritan.</p>
+                        <span class="inline-block bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded font-bold">Upload Info</span>
+                    </div>
+                </div>
+
+                <!-- 4. Track Case Status -->
+                <div class="bg-govblue-900 rounded-xl shadow-lg p-8 flex flex-col sm:flex-row items-center justify-between cursor-pointer hover:bg-govblue-800 transition-colors relative overflow-hidden" onclick="showView('track-view', 'Smart Tracking Engine')">
+                    <i class="fa-solid fa-magnifying-glass-location absolute -right-4 -bottom-4 text-8xl text-white opacity-5 pointer-events-none"></i>
+                    
+                    <div class="flex items-center z-10 w-full mb-6 sm:mb-0">
+                        <div class="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center text-govsaffron mr-6 border border-white/20 backdrop-blur-sm">
+                            <i class="fa-solid fa-satellite-dish text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-1 tracking-tight">Track Case Status</h3>
+                            <p class="text-sm text-blue-200 max-w-lg">Monitor real-time AI matches, police verification updates, and recovery status.</p>
+                        </div>
+                    </div>
+                    <button class="bg-white text-govblue-900 px-8 py-3.5 rounded-lg font-bold shadow-md hover:bg-slate-100 transition-colors w-full sm:w-auto z-10 shrink-0">
+                        Track Status <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW 2: LOST ITEM TRIAGE (Restored exact text, BNS 2023 legal info, and ₹ currency) -->
+            <div id="triage-view" class="view-section max-w-4xl mx-auto">
+                <button onclick="showView('dashboard-view', 'Citizen Dashboard')" class="text-sm text-govblue-600 hover:text-govblue-800 mb-6 font-bold flex items-center transition">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back
+                </button>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-5 mb-8 flex items-start shadow-sm">
+                    <i class="fa-solid fa-scale-balanced text-blue-600 mt-0.5 mr-4 text-xl"></i>
+                    <div>
+                        <h4 class="font-bold text-blue-900 text-lg">Legal Classification (BNS 2023)</h4>
+                        <p class="text-sm text-blue-800 mt-1">Under the Bharatiya Nyaya Sanhita guidelines, property loss is classified based on monetary value to determine the appropriate law enforcement response track.</p>
+                    </div>
+                </div>
+                
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">What is the estimated value of the lost item?</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Less than 5k -->
+                    <div class="bg-white rounded-xl shadow border border-slate-200 p-8 hover:shadow-lg hover:border-govblue-300 transition-all cursor-pointer text-center group" onclick="showFormView('e-NCR (Loss ≤ ₹5,000)')">
+                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 mx-auto mb-5 group-hover:bg-govblue-50 group-hover:text-govblue-600 transition">
+                            <i class="fa-solid fa-coins text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-slate-800">Less than ₹5,000</h3>
+                        <p class="text-sm text-slate-500 mt-3 mb-8">Generates an official e-NCR certificate. Ideal for wallets, ID cards, or minor accessories.</p>
+                        <button class="w-full bg-slate-100 text-slate-700 py-3 rounded-lg font-bold group-hover:bg-govblue-600 group-hover:text-white transition">Proceed to e-NCR</button>
+                    </div>
+
+                    <!-- More than 5k -->
+                    <div class="bg-white rounded-xl shadow border border-slate-200 p-8 hover:shadow-lg hover:border-govsaffron transition-all cursor-pointer text-center group" onclick="showFormView('e-FIR (Loss > ₹5,000)')">
+                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 mx-auto mb-5 group-hover:bg-orange-50 group-hover:text-govsaffron transition">
+                            <i class="fa-solid fa-sack-dollar text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-slate-800">₹5,000 or More</h3>
+                        <p class="text-sm text-slate-500 mt-3 mb-8">Generates an e-FIR requiring active police investigation. Ideal for laptops, phones, or jewelry.</p>
+                        <button class="w-full bg-slate-100 text-slate-700 py-3 rounded-lg font-bold group-hover:bg-govsaffron group-hover:text-white transition">Proceed to e-FIR</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 3: FORM & MAP -->
+            <div id="form-view" class="view-section max-w-5xl mx-auto">
+                <button onclick="showView('triage-view', 'Lost Property Evaluation')" class="text-sm text-govblue-600 hover:text-govblue-800 mb-6 font-bold flex items-center transition">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back to Value Selection
+                </button>
+                
+                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-100 border-b border-slate-200 p-5 px-8 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-govblue-900 uppercase tracking-tight">Official Registration</h2>
+                            <p id="form-subtitle" class="text-xs font-bold text-govsaffron mt-1">Generating: e-NCR</p>
+                        </div>
+                        <span class="bg-white border border-slate-300 text-slate-600 text-xs px-3 py-1.5 rounded font-bold shadow-sm"><i class="fa-solid fa-shield-halved mr-1 text-govblue-600"></i> Encrypted</span>
+                    </div>
+
+                    <form id="lostItemForm" class="p-8" onsubmit="submitForm(event)">
+                        
+                        <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">1. Complainant Identity</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">Identity Reference</label>
+                                <div class="w-full bg-slate-50 border border-slate-200 rounded-md p-3 text-slate-500 font-mono text-sm flex items-center cursor-not-allowed">
+                                    <i class="fa-solid fa-check-circle text-green-500 mr-2"></i> Verified User ID
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">Registered Mobile</label>
+                                <div class="w-full bg-slate-50 border border-slate-200 rounded-md p-3 text-slate-500 font-mono text-sm flex items-center cursor-not-allowed">
+                                    <i class="fa-solid fa-phone text-slate-400 mr-2"></i> +91 98765 43210
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">2. Item Specifications</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Category <span class="text-red-500">*</span></label>
+                                <select id="itemCategory" class="w-full border border-slate-300 rounded-md p-3 focus:ring-2 focus:ring-govblue-500 outline-none" required>
+                                    <option value="">Select...</option>
+                                    <option value="Electronics">Electronics (Mobile, Laptop)</option>
+                                    <option value="Bags">Bags & Luggage</option>
+                                    <option value="Documents">Wallets & Documents</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Date & Time of Loss <span class="text-red-500">*</span></label>
+                                <input type="datetime-local" id="itemDate" class="w-full border border-slate-300 rounded-md p-3 focus:ring-2 focus:ring-govblue-500 outline-none" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Visual Description (Used by AI Grid) <span class="text-red-500">*</span></label>
+                            <p class="text-xs text-slate-500 mb-2">Describe colors, brands, and visible damage for the Semantic Matcher.</p>
+                            <textarea id="itemDesc" rows="3" class="w-full border border-slate-300 rounded-md p-3 focus:ring-2 focus:ring-govblue-500 outline-none" placeholder="E.g., Black Dell laptop backpack with red zippers..." required></textarea>
+                        </div>
+
+                        <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-5">
+                            <label class="block text-sm font-bold text-govblue-900 mb-1">
+                                <i class="fa-solid fa-key mr-2 text-govsaffron"></i> Hidden Identifier / Proof of Ownership <span class="text-red-500">*</span>
+                            </label>
+                            <p class="text-xs text-blue-700 mb-3">Provide a detail only you know to bypass serial numbers (e.g., lock screen image, scratch on back).</p>
+                            <input type="text" id="itemHidden" class="w-full border border-blue-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="E.g., Contains a faded sticker on the inside pocket" required>
+                        </div>
+
+                        <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">3. Location & Media</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Pinpoint Location <span class="text-red-500">*</span></label>
+                                <p class="text-xs text-slate-500 mb-2">Click to drop pin. Sets the 10km search radius.</p>
+                                <div id="map" class="w-full h-64 bg-slate-200 rounded-md border border-slate-300 z-0"></div>
+                                <input type="hidden" id="lat" value="28.6139">
+                                <input type="hidden" id="lng" value="77.2090">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Upload Reference Photo</label>
+                                <p class="text-xs text-slate-500 mb-2">Optional old photo of the item.</p>
+                                <div class="w-full h-64 border-2 border-dashed border-slate-300 rounded-md flex flex-col items-center justify-center text-slate-500 bg-slate-50 hover:bg-slate-100 transition cursor-pointer">
+                                    <i class="fa-solid fa-cloud-arrow-up text-4xl mb-3 text-govblue-600"></i>
+                                    <span class="text-sm font-bold text-slate-700">Click to Upload Image</span>
+                                    <span class="text-xs mt-1 text-slate-400">JPG, PNG &lt; 5MB</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-200 pt-6 flex flex-col md:flex-row justify-between items-center">
+                            <div class="flex items-center text-xs text-slate-500 mb-4 md:mb-0">
+                                <i class="fa-solid fa-gavel mr-2 text-lg text-slate-400"></i>
+                                <p>By submitting, you declare this information is true under the IT Act 2000.</p>
+                            </div>
+                            <button type="submit" class="w-full md:w-auto bg-govblue-900 text-white px-10 py-3.5 rounded-md font-bold shadow-md hover:bg-govblue-800 transition">
+                                Submit Legal Report <i class="fa-solid fa-paper-plane ml-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- VIEW 4: SUCCESS & PDF GENERATION -->
+            <div id="success-view" class="view-section max-w-3xl mx-auto mt-6">
+                <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div class="bg-green-600 p-8 text-center text-white">
+                        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+                            <i class="fa-solid fa-check text-4xl text-green-600"></i>
+                        </div>
+                        <h2 class="text-3xl font-extrabold tracking-wide">Complaint Registered</h2>
+                        <p class="text-green-100 mt-2 text-lg">Your report is now live on the Smart Malkhana AI Grid.</p>
+                    </div>
+
+                    <div class="p-10 text-center">
+                        <p class="text-slate-600 mb-8">Please note down your unique reference number. You will receive updates if a potential match is found.</p>
+                        
+                        <div class="inline-block bg-slate-50 border border-slate-200 rounded-lg p-6 mb-10 shadow-inner min-w-[300px]">
+                            <span class="text-xs text-slate-500 uppercase tracking-widest font-bold block mb-2">Official Reference Number</span>
+                            <span id="generated-id" class="text-4xl font-mono font-black text-govblue-900 tracking-wider">NCR-XXXX</span>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                            <button onclick="generatePDF()" class="bg-white border border-slate-300 text-slate-800 px-8 py-3.5 rounded-md font-bold hover:bg-slate-50 hover:text-red-600 transition shadow-sm flex items-center justify-center">
+                                <i class="fa-solid fa-file-pdf text-xl mr-3 text-red-500"></i> Download e-Receipt
+                            </button>
+                            <button onclick="showView('track-view', 'Smart Tracking Engine')" class="bg-govsaffron text-white px-8 py-3.5 rounded-md font-bold hover:bg-orange-600 shadow-md transition flex items-center justify-center">
+                                Track Live Status <i class="fa-solid fa-arrow-right ml-3"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 5: TRACK CASE STATUS -->
+            <div id="track-view" class="view-section max-w-4xl mx-auto">
+                <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-8 sm:p-10">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-2">Track Asset Status</h2>
+                    <p class="text-slate-500 mb-8">Enter your Reference Number to query the AI Grid for Malkhana matches.</p>
+                    
+                    <div class="flex flex-col sm:flex-row mb-10 bg-slate-50 p-2 rounded-lg border border-slate-300 shadow-inner">
+                        <div class="relative flex-grow">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-hashtag text-slate-400"></i>
+                            </div>
+                            <input type="text" id="trackInput" class="w-full bg-transparent pl-12 p-3 font-mono font-bold text-xl text-slate-800 focus:outline-none uppercase" placeholder="e.g., NCR-2026-894A">
+                        </div>
+                        <button onclick="simulateTracking()" class="mt-2 sm:mt-0 bg-govblue-900 text-white px-10 py-3 rounded-md font-bold hover:bg-govblue-800 transition shadow flex items-center justify-center">
+                            Search Grid
+                        </button>
+                    </div>
+
+                    <div id="track-loading" class="hidden py-12 text-center">
+                        <div class="loader w-12 h-12 border-4 border-slate-200 rounded-full mx-auto mb-4"></div>
+                        <p class="text-sm font-bold text-govblue-900 animate-pulse">Querying Malkhana Databases within 10km radius...</p>
+                    </div>
+
+                    <div id="track-results" class="hidden">
+                        <div class="bg-white border-l-4 border-govblue-900 shadow-sm rounded-r-lg p-6 mb-10 flex flex-col md:flex-row justify-between items-start md:items-center border border-slate-200">
+                            <div class="mb-4 md:mb-0">
+                                <h4 class="font-black text-xl text-slate-800 uppercase" id="track-item-name">Black Dell Laptop Backpack</h4>
+                                <p class="text-sm text-slate-500 mt-1 font-medium"><i class="fa-regular fa-calendar-check mr-1 text-govsaffron"></i> Logged Date: <span id="track-date">11 Sep 2026</span></p>
+                            </div>
+                            <div>
+                                <span class="bg-blue-50 text-blue-800 px-4 py-1.5 rounded-full font-bold border border-blue-200 text-sm flex items-center shadow-sm">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-600 mr-2 animate-pulse"></span> GRID SCAN ACTIVE
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="relative pl-6 border-l-[3px] border-slate-200 ml-4 space-y-10">
+                            <div class="relative">
+                                <div class="absolute -left-[41px] bg-green-500 w-10 h-10 rounded-full flex items-center justify-center border-4 border-white shadow-md">
+                                    <i class="fa-solid fa-check text-white text-sm"></i>
+                                </div>
+                                <div class="bg-slate-50 p-5 rounded-lg border border-slate-100 shadow-sm ml-4">
+                                    <h4 class="font-bold text-slate-900 text-lg">Report Authenticated</h4>
+                                    <p class="text-sm text-slate-500 mt-1">Identity verified successfully. Document generated.</p>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <div class="absolute -left-[41px] bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center border-4 border-white shadow-md ring-4 ring-blue-100">
+                                    <i class="fa-solid fa-radar text-white text-sm animate-pulse"></i>
+                                </div>
+                                <div class="bg-blue-50/50 p-5 rounded-lg border border-blue-200 shadow-sm ml-4">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <h4 class="font-bold text-blue-800 text-lg">Smart Malkhana AI Scan Active</h4>
+                                        <span class="text-[10px] font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded border border-blue-200 animate-pulse uppercase">In Progress</span>
+                                    </div>
+                                    <p class="text-sm text-slate-600">The NLP Engine is cross-referencing your description against police inventory uploads in real-time.</p>
+                                </div>
+                            </div>
+
+                            <div class="relative opacity-40">
+                                <div class="absolute -left-[41px] bg-slate-200 w-10 h-10 rounded-full flex items-center justify-center border-4 border-white">
+                                    <i class="fa-solid fa-handshake text-slate-400 text-sm"></i>
+                                </div>
+                                <div class="p-5 ml-4">
+                                    <h4 class="font-bold text-slate-700 text-lg">Semantic Match Identified</h4>
+                                    <p class="text-sm text-slate-500 mt-1">Awaiting physical visual confirmation from Malkhana.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let map;
+        let currentRefNo = "NCR-2026-894A";
+        let reportData = {};
+
+        function showView(viewId, title = 'Citizen Dashboard', subtitle = '') {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
+            document.getElementById(viewId).classList.add('active-view');
+            document.getElementById('page-title').innerText = title;
+            
+            if(subtitle) document.getElementById('form-subtitle').innerText = 'Generating: ' + subtitle;
+
+            if(viewId === 'form-view' && !map) {
+                initMap();
+            }
+
+            document.getElementById('main-scroll-area').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showFormView(subtitle) {
+            showView('form-view', 'Official Registration', subtitle);
+        }
+
+        function initMap() {
+            setTimeout(() => {
+                map = L.map('map').setView([28.6139, 77.2090], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                let marker = L.marker([28.6139, 77.2090], {draggable: true}).addTo(map);
+
+                marker.on('dragend', function() {
+                    document.getElementById('lat').value = marker.getLatLng().lat.toFixed(5);
+                    document.getElementById('lng').value = marker.getLatLng().lng.toFixed(5);
+                });
+
+                map.on('click', function(e) {
+                    marker.setLatLng(e.latlng);
+                    document.getElementById('lat').value = e.latlng.lat.toFixed(5);
+                    document.getElementById('lng').value = e.latlng.lng.toFixed(5);
+                });
+            }, 100);
+        }
+
+        function submitForm(e) {
+            e.preventDefault();
+            
+            reportData = {
+                category: document.getElementById('itemCategory').value,
+                date: document.getElementById('itemDate').value,
+                desc: document.getElementById('itemDesc').value,
+                hidden: document.getElementById('itemHidden').value,
+                lat: document.getElementById('lat').value,
+                lng: document.getElementById('lng').value
+            };
+
+            const isFIR = document.getElementById('form-subtitle').innerText.includes('e-FIR');
+            const prefix = isFIR ? 'FIR' : 'NCR';
+            currentRefNo = `${prefix}-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+            
+            document.getElementById('generated-id').innerText = currentRefNo;
+            document.getElementById('trackInput').value = currentRefNo;
+            
+            showView('success-view', 'Registration Complete');
+        }
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.setTextColor(30, 58, 138);
+            doc.text("SAMPATTI-SETU | DELHI POLICE", 105, 20, null, null, "center");
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text("Official Digital Acknowledgment Receipt", 105, 28, null, null, "center");
+            
+            doc.setLineWidth(0.5);
+            doc.line(20, 35, 190, 35);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Reference No: ${currentRefNo}`, 20, 50);
+            doc.text(`Date of Filing: ${new Date().toLocaleDateString()}`, 20, 60);
+            doc.text(`Complainant Name: Rahul Kumar (Verified Profile)`, 20, 70);
+            doc.text(`Item Category: ${reportData.category || 'N/A'}`, 20, 80);
+            doc.text(`Date of Loss: ${reportData.date || 'N/A'}`, 20, 90);
+            
+            doc.text(`Visual Description:`, 20, 105);
+            doc.setFontSize(11);
+            doc.setTextColor(50, 50, 50);
+            const splitDesc = doc.splitTextToSize(reportData.desc || 'N/A', 170);
+            doc.text(splitDesc, 20, 115);
+            
+            let nextY = 115 + (splitDesc.length * 7) + 10;
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`GPS Coordinates: Lat ${reportData.lat}, Lng ${reportData.lng}`, 20, nextY);
+            
+            doc.setLineWidth(0.5);
+            doc.line(20, 270, 190, 270);
+            doc.setFontSize(10);
+            doc.setTextColor(150, 150, 150);
+            doc.text("This is an auto-generated document by the Sampatti-Setu AI Grid.", 105, 280, null, null, "center");
+
+            doc.save(`${currentRefNo}_Receipt.pdf`);
+        }
+
+        function simulateTracking() {
+            const inputVal = document.getElementById('trackInput').value;
+            if(!inputVal) return alert("Please enter a reference number.");
+
+            document.getElementById('track-results').classList.add('hidden');
+            document.getElementById('track-loading').classList.remove('hidden');
+
+            setTimeout(() => {
+                document.getElementById('track-loading').classList.add('hidden');
+                document.getElementById('track-item-name').innerText = reportData.category ? `Lost ${reportData.category}` : "Black Dell Laptop Backpack";
+                document.getElementById('track-date').innerText = new Date().toLocaleDateString();
+                document.getElementById('track-results').classList.remove('hidden');
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

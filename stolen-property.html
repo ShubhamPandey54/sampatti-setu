@@ -1,0 +1,1026 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAMPATTI-SETU | Stolen Item Report</title>
+
+  <style>
+    :root {
+      --navy: #102a43;
+      --red: #dc2626;
+      --dark-red: #991b1b;
+      --blue: #2563eb;
+      --green: #059669;
+      --bg: #f4f6f9;
+      --border: #dce3ed;
+      --text: #1f2937;
+      --muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 250px;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, #102a43, #0b1f33);
+      color: #ffffff;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 26px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #ffffff;
+      color: var(--red);
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .brand h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.8px;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: #b9cce0;
+      font-size: 11px;
+      letter-spacing: 0.8px;
+    }
+
+    .nav-links {
+      padding: 24px 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .nav-links li {
+      margin-bottom: 10px;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 10px;
+      color: #dce9f5;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .nav-links a.active,
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.13);
+      color: #ffffff;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 14px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #b9cce0;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 42px 28px;
+    }
+
+    .page-header {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto 22px;
+      padding-top: 28px;
+    }
+
+    .portal-label {
+      position: absolute;
+      top: 0;
+      right: 0;
+      color: var(--red);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(25px, 4vw, 34px);
+    }
+
+    .page-header p {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .form-card {
+      width: 100%;
+      max-width: 1000px;
+      margin: auto;
+      padding: clamp(20px, 4vw, 40px);
+      border: 1px solid #e7ebf0;
+      border-radius: 20px;
+      background: #ffffff;
+      box-shadow: 0 16px 42px rgba(15, 42, 67, 0.10);
+    }
+
+    .section {
+      padding: 26px 0;
+      border-bottom: 1px solid #e7ebf0;
+    }
+
+    .section:last-of-type {
+      border-bottom: 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 18px;
+      color: var(--navy);
+      font-size: 19px;
+    }
+
+    .section-number {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--red);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 47px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      background: #ffffff;
+      color: var(--text);
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
+
+    .value-status {
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .value-status.efir {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .value-status.encr {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .location-layout,
+    .verification-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 1fr);
+      gap: 22px;
+    }
+
+    .location-card,
+    .efir-card {
+      padding: 20px;
+      border: 1px solid #fecaca;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #fff7f7, #fffafa);
+    }
+
+    .location-card .field + .field {
+      margin-top: 15px;
+    }
+
+    .map-card {
+      position: relative;
+      min-height: 250px;
+      overflow: hidden;
+      border: 1px solid #b6d0bc;
+      border-radius: 15px;
+      background:
+        linear-gradient(25deg, transparent 48%, rgba(255,255,255,.75) 49%, rgba(255,255,255,.75) 52%, transparent 53%),
+        linear-gradient(-20deg, transparent 46%, rgba(255,255,255,.72) 47%, rgba(255,255,255,.72) 50%, transparent 51%),
+        linear-gradient(90deg, rgba(21,128,61,.18) 1px, transparent 1px),
+        linear-gradient(rgba(21,128,61,.18) 1px, transparent 1px),
+        #d8f0d8;
+      background-size: auto, auto, 42px 42px, 42px 42px, auto;
+    }
+
+    .gps-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 2;
+      padding: 9px 11px;
+      border-radius: 8px;
+      background: rgba(15, 42, 67, 0.90);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .location-pin {
+      position: absolute;
+      top: 50%;
+      left: 53%;
+      z-index: 3;
+      transform: translate(-50%, -50%);
+      font-size: 46px;
+      filter: drop-shadow(0 7px 5px rgba(127, 29, 29, 0.32));
+      animation: bounce-pin 1s infinite ease-in-out;
+    }
+
+    .map-label {
+      position: absolute;
+      right: 14px;
+      bottom: 13px;
+      z-index: 2;
+      color: #28513a;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @keyframes bounce-pin {
+      0%, 100% {
+        transform: translate(-50%, -50%);
+      }
+
+      50% {
+        transform: translate(-50%, calc(-50% - 13px));
+      }
+    }
+
+    .pin-button,
+    .camera-btn {
+      width: fit-content;
+      padding: 11px 14px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--blue);
+      color: #ffffff;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .camera-btn.secondary {
+      background: #475569;
+    }
+
+    .camera-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .status-text {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .webcam-box {
+      min-height: 230px;
+      overflow: hidden;
+      border: 1px solid #bcd0e6;
+      border-radius: 12px;
+      background: #102a43;
+    }
+
+    .webcam-box video,
+    .webcam-box img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+      display: none;
+    }
+
+    .webcam-box video {
+      display: block;
+    }
+
+    .camera-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .declaration-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 18px;
+      color: #334155;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .declaration-row input {
+      width: 18px;
+      min-height: 18px;
+      margin: 0;
+      accent-color: var(--red);
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 28px;
+      padding: 15px 20px;
+      border: 0;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--red), var(--dark-red));
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 42, 67, 0.62);
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .receipt-modal {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      max-height: 92vh;
+      overflow-y: auto;
+      padding: 30px;
+      border-radius: 20px;
+      background: #ffffff;
+      box-shadow: 0 22px 65px rgba(0, 0, 0, 0.27);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 50%;
+      background: #eef2f7;
+      color: #334155;
+      cursor: pointer;
+      font-size: 22px;
+    }
+
+    .receipt-title {
+      margin: 0;
+      color: var(--navy);
+      font-size: 25px;
+    }
+
+    .receipt-subtitle {
+      margin: 8px 0 22px;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .receipt-list {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      border-top: 1px solid #e7ebf0;
+    }
+
+    .receipt-list li {
+      display: grid;
+      grid-template-columns: 185px 1fr;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid #e7ebf0;
+      font-size: 14px;
+    }
+
+    .receipt-list strong {
+      color: #475569;
+    }
+
+    .receipt-list span {
+      color: var(--navy);
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .download-btn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 13px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--navy);
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 800px) {
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 18px 20px;
+      }
+
+      .nav-links,
+      .sidebar-footer {
+        display: none;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 25px 16px;
+      }
+
+      .location-layout,
+      .verification-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .portal-label {
+        position: static;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .receipt-list li {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+
+      <div>
+        <h2>SAMPATTI-SETU</h2>
+        <p>STOLEN ITEM REPORTING</p>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="#" class="active">🚨 File Stolen Item Report</a></li>
+      <li><a href="#">🔎 Track Report</a></li>
+      <li><a href="#">📋 My Reports</a></li>
+      <li><a href="#">🛡️ Safety Guidelines</a></li>
+    </ul>
+
+    <div class="sidebar-footer">
+      SAMPATTI-SETU secure stolen-property reporting dashboard.
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="page-header">
+      <div class="portal-label">CITIZEN PROPERTY PORTAL</div>
+      <h1>Stolen Item Reporting</h1>
+      <p>Enter stolen-item information, capture the theft location, and generate your report.</p>
+    </header>
+
+    <form id="stolenItemForm" class="form-card">
+      <section class="section">
+        <h2 class="section-heading"><span class="section-number">1</span> Citizen Details</h2>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="fullName">Full Name</label>
+            <input id="fullName" type="text" placeholder="Enter your full name" required>
+          </div>
+
+          <div class="field">
+            <label for="contactNumber">Contact Number</label>
+            <input id="contactNumber" type="tel" placeholder="e.g. 9876543210" required>
+          </div>
+
+          <div class="field full-width">
+            <label for="email">Email Address</label>
+            <input id="email" type="email" placeholder="e.g. citizen@email.com" required>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading"><span class="section-number">2</span> Stolen Item Details</h2>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="itemName">Stolen Item Name</label>
+            <input id="itemName" type="text" placeholder="e.g. Apple iPhone 15, black leather wallet" required>
+          </div>
+
+          <div class="field">
+            <label for="itemPrice">Estimated Item Price (₹)</label>
+            <input id="itemPrice" type="number" min="0" placeholder="e.g. 45000" required oninput="checkItemValue()">
+            <small id="valueStatus" class="value-status">Enter the estimated value to determine the report type.</small>
+          </div>
+
+          <div class="field full-width">
+            <label for="itemIdentification">Brand / IMEI / Serial Number / Identification Marks</label>
+            <input id="itemIdentification" type="text" placeholder="e.g. iPhone 15 Black, IMEI: 123456789012345" required>
+          </div>
+
+          <div class="field full-width">
+            <label for="theftDescription">How Was the Item Stolen?</label>
+            <textarea id="theftDescription" placeholder="Describe what happened, when it happened, and details of the theft." required></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading"><span class="section-number">3</span> Theft Location &amp; GPS Pin</h2>
+
+        <div class="location-layout">
+          <div class="location-card">
+            <div class="field">
+              <label for="areaName">Sector / Area Name</label>
+              <input id="areaName" type="text" placeholder="e.g. Connaught Place" required>
+            </div>
+
+            <div class="field">
+              <label for="landmark">Nearest Landmark</label>
+              <input id="landmark" type="text" placeholder="e.g. Rajiv Chowk Metro Gate No. 4" required>
+            </div>
+
+            <div class="field">
+              <label for="exactSpot">Exact Theft Spot</label>
+              <input id="exactSpot" type="text" placeholder="e.g. Near platform stairs and ticket counter" required>
+            </div>
+
+            <div class="field">
+              <label>Live Location Pin</label>
+              <button id="locationPinBtn" class="pin-button" type="button">📍 Capture Current Location</button>
+              <small id="locationStatus" class="status-text">No live GPS location captured yet.</small>
+
+              <input id="latitude" type="hidden">
+              <input id="longitude" type="hidden">
+            </div>
+          </div>
+
+          <div class="map-card">
+            <div class="gps-badge">🌐 GPS PIN NETWORK READY</div>
+            <div class="location-pin">📍</div>
+            <div id="mapLabel" class="map-label">Awaiting device location</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading"><span class="section-number">4</span> Live Webcam Verification</h2>
+
+        <div class="verification-layout">
+          <div class="field">
+            <label>Live Photo of Reporting Citizen</label>
+
+            <div class="webcam-box">
+              <video id="webcamVideo" autoplay playsinline muted></video>
+              <img id="capturedPhoto" alt="Captured verification photo">
+            </div>
+
+            <div class="camera-actions">
+              <button id="startCameraBtn" class="camera-btn secondary" type="button">📷 Start Camera</button>
+              <button id="capturePhotoBtn" class="camera-btn" type="button" disabled>Take Live Photo</button>
+            </div>
+
+            <input id="selfiePhoto" type="hidden">
+            <small id="cameraStatus" class="status-text">Start the camera and capture your live verification photo.</small>
+          </div>
+
+          <div class="field">
+            <label for="policeStation">Preferred Police Station</label>
+            <select id="policeStation" required>
+              <option value="" selected disabled>Select a police station</option>
+              <option>Connaught Place Police Station</option>
+              <option>Dwarka North Police Station</option>
+              <option>Dwarka South Police Station</option>
+              <option>Rajouri Garden Police Station</option>
+              <option>Tilak Nagar Police Station</option>
+              <option>Darya Ganj Police Station</option>
+              <option>Kamla Market Police Station</option>
+            </select>
+
+            <label for="incidentDate">Date of Theft</label>
+            <input id="incidentDate" type="date" required>
+
+            <label for="incidentTime">Approximate Time of Theft</label>
+            <input id="incidentTime" type="time" required>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading"><span class="section-number">5</span> File Report</h2>
+
+        <div class="efir-card">
+          <div class="form-grid">
+            <div class="field">
+              <label for="reportCategory">Report Category</label>
+              <select id="reportCategory" required>
+                <option value="" selected disabled>Select item category</option>
+                <option>Mobile Phone Theft</option>
+                <option>Wallet / Cash Theft</option>
+                <option>Vehicle Theft</option>
+                <option>Jewellery Theft</option>
+                <option>Bag / Luggage Theft</option>
+                <option>Electronic Device Theft</option>
+                <option>Other Property Theft</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="complaintPriority">Complaint Priority</label>
+              <select id="complaintPriority" required>
+                <option value="Normal">Normal</option>
+                <option value="High Value Item">High Value Item</option>
+                <option value="Urgent">Urgent</option>
+              </select>
+            </div>
+
+            <div class="field full-width">
+              <label for="additionalStatement">Additional Statement</label>
+              <textarea id="additionalStatement" placeholder="Add supporting information for your report."></textarea>
+            </div>
+          </div>
+
+          <label class="declaration-row" for="declaration">
+            <input id="declaration" type="checkbox" required>
+            <span>I confirm that the information entered in this report is correct to the best of my knowledge.</span>
+          </label>
+        </div>
+      </section>
+
+      <button id="submitButton" class="submit-btn" type="submit">Generate &amp; File eFIR Report</button>
+    </form>
+  </main>
+
+  <div id="receiptOverlay" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="receipt-modal">
+      <button class="modal-close" type="button" aria-label="Close receipt" onclick="closeReceipt()">×</button>
+
+      <h2 id="receiptTitle" class="receipt-title">SAMPATTI-SETU Report</h2>
+      <p id="receiptSubtitle" class="receipt-subtitle">✓ Your report has been generated successfully.</p>
+
+      <ul class="receipt-list">
+        <li><strong>Report ID</strong><span id="receiptId"></span></li>
+        <li><strong>Report Classification</strong><span id="receiptClassification"></span></li>
+        <li><strong>Citizen Name</strong><span id="receiptName"></span></li>
+        <li><strong>Contact Number</strong><span id="receiptContact"></span></li>
+        <li><strong>Report Category</strong><span id="receiptCategory"></span></li>
+        <li><strong>Stolen Item</strong><span id="receiptItem"></span></li>
+        <li><strong>Estimated Value</strong><span id="receiptPrice"></span></li>
+        <li><strong>Theft Location</strong><span id="receiptLocation"></span></li>
+        <li><strong>GPS Pin Status</strong><span id="receiptGps"></span></li>
+        <li><strong>Police Station</strong><span id="receiptStation"></span></li>
+        <li><strong>Theft Date &amp; Time</strong><span id="receiptDateTime"></span></li>
+        <li><strong>Priority</strong><span id="receiptPriority"></span></li>
+      </ul>
+
+      <button id="downloadBtn" class="download-btn" type="button">⬇ Download Report (.txt)</button>
+    </div>
+  </div>
+
+  <script>
+    let cameraStream = null;
+    let generatedReportText = "";
+
+    const webcamVideo = document.getElementById("webcamVideo");
+    const capturedPhoto = document.getElementById("capturedPhoto");
+    const selfiePhoto = document.getElementById("selfiePhoto");
+
+    function createRandomNumber(length) {
+      let result = "";
+
+      for (let index = 0; index < length; index++) {
+        result += Math.floor(Math.random() * 10);
+      }
+
+      return result;
+    }
+
+    function checkItemValue() {
+      const itemPrice = Number(document.getElementById("itemPrice").value);
+      const valueStatus = document.getElementById("valueStatus");
+      const submitButton = document.getElementById("submitButton");
+
+      valueStatus.classList.remove("efir", "encr");
+
+      if (!itemPrice || itemPrice < 0) {
+        valueStatus.textContent = "Enter the estimated value to determine the report type.";
+        submitButton.textContent = "Generate & File eFIR Report";
+        return;
+      }
+
+      if (itemPrice <= 5000) {
+        valueStatus.classList.add("encr");
+        valueStatus.textContent = "Report Classification: e-NCR Report — Item value is ₹5,000 or less.";
+        submitButton.textContent = "Generate e-NCR Report";
+      } else {
+        valueStatus.classList.add("efir");
+        valueStatus.textContent = "Report Classification: eFIR Report — Item value is more than ₹5,000.";
+        submitButton.textContent = "Generate & File eFIR Report";
+      }
+    }
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(function(track) {
+          track.stop();
+        });
+
+        cameraStream = null;
+      }
+    }
+
+    document.getElementById("startCameraBtn").addEventListener("click", async function() {
+      stopCamera();
+
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "user"
+          },
+          audio: false
+        });
+
+        webcamVideo.srcObject = cameraStream;
+        webcamVideo.style.display = "block";
+        capturedPhoto.style.display = "none";
+
+        document.getElementById("capturePhotoBtn").disabled = false;
+        document.getElementById("cameraStatus").textContent = "Camera is active. Capture your live verification photo.";
+      } catch (error) {
+        document.getElementById("cameraStatus").textContent = "Camera access failed. Please allow camera permission and try again.";
+      }
+    });
+
+    document.getElementById("capturePhotoBtn").addEventListener("click", function() {
+      const canvas = document.createElement("canvas");
+
+      canvas.width = webcamVideo.videoWidth;
+      canvas.height = webcamVideo.videoHeight;
+
+      const context = canvas.getContext("2d");
+      context.drawImage(webcamVideo, 0, 0, canvas.width, canvas.height);
+
+      selfiePhoto.value = canvas.toDataURL("image/png");
+      capturedPhoto.src = selfiePhoto.value;
+      capturedPhoto.style.display = "block";
+      webcamVideo.style.display = "none";
+
+      stopCamera();
+
+      document.getElementById("capturePhotoBtn").disabled = true;
+      document.getElementById("cameraStatus").textContent = "✓ Live citizen verification photo captured.";
+    });
+
+    document.getElementById("locationPinBtn").addEventListener("click", function() {
+      const locationStatus = document.getElementById("locationStatus");
+      const mapLabel = document.getElementById("mapLabel");
+
+      if (!navigator.geolocation) {
+        locationStatus.textContent = "Your browser does not support geolocation.";
+        return;
+      }
+
+      locationStatus.textContent = "Requesting current device location...";
+
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const latitude = position.coords.latitude.toFixed(6);
+          const longitude = position.coords.longitude.toFixed(6);
+
+          document.getElementById("latitude").value = latitude;
+          document.getElementById("longitude").value = longitude;
+
+          locationStatus.textContent = "✓ GPS pin captured: " + latitude + ", " + longitude;
+          mapLabel.textContent = "GPS Pin: " + latitude + ", " + longitude;
+        },
+        function() {
+          locationStatus.textContent = "Could not capture GPS location. Please allow location permission and try again.";
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    });
+
+    document.getElementById("stolenItemForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      if (!this.checkValidity()) {
+        this.reportValidity();
+        return;
+      }
+
+      if (!selfiePhoto.value) {
+        document.getElementById("cameraStatus").textContent = "Please capture the live webcam verification photo before filing the report.";
+        return;
+      }
+
+      const fullName = document.getElementById("fullName").value.trim();
+      const contactNumber = document.getElementById("contactNumber").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const itemName = document.getElementById("itemName").value.trim();
+      const itemPrice = Number(document.getElementById("itemPrice").value);
+      const itemIdentification = document.getElementById("itemIdentification").value.trim();
+      const theftDescription = document.getElementById("theftDescription").value.trim();
+      const areaName = document.getElementById("areaName").value.trim();
+      const landmark = document.getElementById("landmark").value.trim();
+      const exactSpot = document.getElementById("exactSpot").value.trim();
+      const policeStation = document.getElementById("policeStation").value;
+      const incidentDate = document.getElementById("incidentDate").value;
+      const incidentTime = document.getElementById("incidentTime").value;
+      const reportCategory = document.getElementById("reportCategory").value;
+      const complaintPriority = document.getElementById("complaintPriority").value;
+      const additionalStatement = document.getElementById("additionalStatement").value.trim();
+      const latitude = document.getElementById("latitude").value;
+      const longitude = document.getElementById("longitude").value;
+
+      const isENCR = itemPrice <= 5000;
+      const reportClassification = isENCR ? "e-NCR Report" : "eFIR Report";
+      const reportId = isENCR
+        ? "eNCR-SETU-" + createRandomNumber(6)
+        : "eFIR-SETU-" + createRandomNumber(6);
+
+      const locationSummary = areaName + " → " + landmark + " → " + exactSpot;
+      const gpsStatus = latitude && longitude
+        ? "GPS location captured: " + latitude + ", " + longitude
+        : "Manual theft location recorded.";
+
+      document.getElementById("receiptTitle").textContent = isENCR
+        ? "SAMPATTI-SETU e-NCR Report"
+        : "SAMPATTI-SETU eFIR Report";
+
+      document.getElementById("receiptSubtitle").textContent = isENCR
+        ? "✓ Your e-NCR report has been generated successfully."
+        : "✓ Your eFIR report has been generated successfully.";
+
+      document.getElementById("receiptId").textContent = reportId;
+      document.getElementById("receiptClassification").textContent = reportClassification;
+      document.getElementById("receiptName").textContent = fullName;
+      document.getElementById("receiptContact").textContent = contactNumber;
+      document.getElementById("receiptCategory").textContent = reportCategory;
+      document.getElementById("receiptItem").textContent = itemName + " | " + itemIdentification;
+      document.getElementById("receiptPrice").textContent = "₹" + itemPrice.toLocaleString("en-IN");
+      document.getElementById("receiptLocation").textContent = locationSummary;
+      document.getElementById("receiptGps").textContent = gpsStatus;
+      document.getElementById("receiptStation").textContent = policeStation;
+      document.getElementById("receiptDateTime").textContent = incidentDate + " at " + incidentTime;
+      document.getElementById("receiptPriority").textContent = complaintPriority;
+
+      generatedReportText =
+        "SAMPATTI-SETU " + reportClassification.toUpperCase() + "\n\n" +
+        "Report ID: " + reportId + "\n" +
+        "Report Classification: " + reportClassification + "\n" +
+        "Citizen Name: " + fullName + "\n" +
+        "Contact Number: " + contactNumber + "\n" +
+        "Email: " + email + "\n" +
+        "Report Category: " + reportCategory + "\n" +
+        "Priority: " + complaintPriority + "\n" +
+        "Stolen Item: " + itemName + "\n" +
+        "Item Identification: " + itemIdentification + "\n" +
+        "Estimated Value: ₹" + itemPrice.toLocaleString("en-IN") + "\n" +
+        "Theft Description: " + theftDescription + "\n" +
+        "Theft Location: " + locationSummary + "\n" +
+        "GPS Status: " + gpsStatus + "\n" +
+        "Police Station: " + policeStation + "\n" +
+        "Theft Date and Time: " + incidentDate + " at " + incidentTime + "\n" +
+        "Additional Statement: " + additionalStatement;
+
+      document.getElementById("receiptOverlay").classList.add("show");
+    });
+
+    document.getElementById("downloadBtn").addEventListener("click", function() {
+      const reportFile = new Blob([generatedReportText], {
+        type: "text/plain"
+      });
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(reportFile);
+      downloadLink.download = "SAMPATTI-SETU-Stolen-Item-Report.txt";
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+
+      URL.revokeObjectURL(downloadLink.href);
+    });
+
+    function closeReceipt() {
+      document.getElementById("receiptOverlay").classList.remove("show");
+    }
+
+    document.getElementById("receiptOverlay").addEventListener("click", function(event) {
+      if (event.target === this) {
+        closeReceipt();
+      }
+    });
+
+    window.addEventListener("beforeunload", stopCamera);
+  </script>
+</body>
+</html>
+```

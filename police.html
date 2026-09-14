@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAMPATTI-SETU | Delhi Police</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="cool.css">
+</head>
+<body>
+
+<div class="modal-backdrop" id="foundModal">
+  <div class="found-modal">
+    <button class="modal-close" id="closeModal">&times;</button>
+    <div class="found-badge">✓</div>
+    <div class="eyebrow">NEW NOTIFICATION</div>
+    <h2>Found Item Reported</h2>
+    <p class="modal-muted">A new item has been reported and is waiting for police verification.</p>
+    <div class="found-details">
+      <div><span>Case ID</span><strong>#SS-1025</strong></div>
+      <div><span>Item</span><strong>Mobile Phone</strong></div>
+      <div><span>Found by</span><strong>Vidit</strong></div>
+      <div><span>Location</span><strong>Dwarka, New Delhi</strong></div>
+    </div>
+    <button class="btn btn-primary full" id="viewNotification">View Dashboard</button>
+  </div>
+</div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-logo">🚔</div>
+    <div><h1>SAMPATTI-SETU</h1><p>Delhi Police Lost & Found System</p></div>
+  </div>
+  <div class="top-actions">
+    <button class="icon-btn" id="notificationBtn">🔔<span class="notification-dot"></span></button>
+    <div class="officer">
+      <div class="officer-avatar">AS</div>
+      <div><strong>Police Officer</strong><span>Dwarka District</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-title">POLICE PORTAL</div>
+  <nav>
+    <button class="nav-item active" data-page="dashboard"><span>▦</span>Dashboard</button>
+    <button class="nav-item" data-page="cases"><span>▤</span>Lost & Found Cases</button>
+    <button class="nav-item" data-page="matching"><span>⌕</span>Smart Matching</button>
+    <button class="nav-item" data-page="map"><span>⌖</span>Case Map</button>
+    <button class="nav-item" data-page="verification"><span>✓</span>Verification <b class="nav-count">5</b></button>
+    <button class="nav-item" data-page="alerts"><span>🔔</span>Alerts <b class="nav-count red">3</b></button>
+    <button class="nav-item" data-page="analytics"><span>▥</span>Analytics</button>
+  </nav>
+  <div class="sidebar-bottom">
+    <button class="nav-item" data-page="settings"><span>⚙</span>Settings</button>
+    <button class="nav-item logout-btn" id="logoutBtn"><span>↪</span>Logout</button>
+  </div>
+</aside>
+
+<main class="content">
+
+<section class="page active" id="dashboard">
+  <div class="page-heading">
+    <div><div class="breadcrumb">Police Portal / Dashboard</div><h2>Good Morning, Officer 👋</h2><p>Here is today's Lost & Found activity.</p></div>
+    <div class="heading-actions">
+      <button class="btn btn-digitise" id="digitiseBtn"><img src="scanner.png" class="scanner-logo" alt="Scanner"></span> DIGITISE an item</button>
+      <button class="btn btn-primary" id="newCaseBtn">+ New Case</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card blue"><div class="stat-icon">📋</div><div><span>Total Lost Reports</span><strong>248</strong><small>↑ 12% this month</small></div></div>
+    <div class="stat-card green"><div class="stat-icon">📦</div><div><span>Found Items</span><strong>186</strong><small>↑ 8% this month</small></div></div>
+    <div class="stat-card orange"><div class="stat-icon">⏳</div><div><span>Pending Verification</span><strong>24</strong><small>Needs attention</small></div></div>
+    <div class="stat-card purple"><div class="stat-icon">✓</div><div><span>Successful Matches</span><strong>142</strong><small>57% match rate</small></div></div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="panel">
+      <div class="panel-header"><div><h3>Recent Cases</h3><p>Latest reported Lost & Found cases</p></div><button class="text-btn" data-page-link="cases">View All →</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Case ID</th><th>Item</th><th>Type</th><th>Location</th><th>Date</th><th>Status</th></tr></thead><tbody id="recentCases"></tbody></table></div>
+    </div>
+
+    <div class="panel matching-card">
+      <div class="panel-header"><div><h3>🤖 Smart Matching</h3><p>AI-assisted case matching</p></div></div>
+      <div class="match-score"><div class="score-circle"><strong>94%</strong><span>Match</span></div></div>
+      <div class="match-info">
+        <div><span>Lost Case</span><strong>#SS-1024</strong><small>Mobile Phone</small></div>
+        <div class="match-arrow">↕</div>
+        <div><span>Found Case</span><strong>#SS-1025</strong><small>Mobile Phone</small></div>
+      </div>
+      <button class="btn btn-primary full" id="reviewMatch">Review Match</button>
+    </div>
+  </div>
+
+  <div class="bottom-grid">
+    <div class="panel">
+      <div class="panel-header"><div><h3>Case Activity</h3><p>Recent system activity</p></div></div>
+      <div class="activity-list">
+        <div class="activity"><div class="activity-icon green">✓</div><div><strong>Case #SS-1023 verified</strong><span>5 minutes ago</span></div></div>
+        <div class="activity"><div class="activity-icon blue">📦</div><div><strong>New found item reported</strong><span>18 minutes ago</span></div></div>
+        <div class="activity"><div class="activity-icon orange">!</div><div><strong>Verification pending</strong><span>32 minutes ago</span></div></div>
+      </div>
+    </div>
+    <div class="panel quick-card">
+      <div class="panel-header"><div><h3>Quick Actions</h3><p>Frequently used tools</p></div></div>
+      <div class="quick-actions">
+        <button data-page-link="verification"><span>✓</span>Verify Cases</button>
+        <button data-page-link="matching"><span>🤖</span>Find Matches</button>
+        <button data-page-link="map"><span>🗺</span>Open Case Map</button>
+        <button data-page-link="analytics"><span>📊</span>View Analytics</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="cases">
+  <div class="page-heading"><div><div class="breadcrumb">Police Portal / Cases</div><h2>Lost & Found Cases</h2><p>Manage all reported cases.</p></div><button class="btn btn-primary" id="caseCreateBtn">+ New Case</button></div>
+  <div class="panel">
+    <div class="filters">
+      <div class="search-box">🔎<input type="text" id="caseSearch" placeholder="Search case, item or location..."></div>
+      <select id="typeFilter"><option value="all">All Types</option><option value="Lost">Lost</option><option value="Found">Found</option></select>
+      <select id="statusFilter"><option value="all">All Status</option><option value="Pending">Pending</option><option value="Verified">Verified</option><option value="Matched">Matched</option></select>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Case ID</th><th>Item</th><th>Type</th><th>Location</th><th>Date</th><th>Status</th><th>Action</th></tr></thead><tbody id="casesTable"></tbody></table></div>
+  </div>
+</section>
+
+<section class="page" id="matching">
+  <div class="page-heading"><div><div class="breadcrumb">Police Portal / Smart Matching</div><h2>Smart Matching 🤖</h2><p>AI-assisted matching between lost and found reports.</p></div></div>
+  <div class="match-dashboard"><div class="panel">
+    <div class="panel-header"><div><h3>Potential Match Detected</h3><p>System has identified a strong similarity.</p></div><span class="status matched">94% Match</span></div>
+    <div class="case-comparison">
+      <div class="case-box"><span>LOST CASE</span><h3>#SS-1024</h3><p>📱 Mobile Phone</p><p>📍 Dwarka</p><p>📅 11 Sep 2026</p></div>
+      <div class="big-arrow">⇄</div>
+      <div class="case-box"><span>FOUND CASE</span><h3>#SS-1025</h3><p>📱 Mobile Phone</p><p>📍 Dwarka</p><p>📅 11 Sep 2026</p></div>
+    </div>
+    <div class="match-reasons"><h4>Why this match?</h4><div class="reason">✓ Same item category</div><div class="reason">✓ Same location</div><div class="reason">✓ Similar report time</div><div class="reason">✓ Matching item description</div></div>
+    <div class="action-row"><button class="btn btn-success" id="confirmMatch">✓ Confirm Match</button><button class="btn btn-outline" id="rejectMatch">Reject Match</button></div>
+  </div></div>
+</section>
+
+<section class="page" id="map">
+  <div class="page-heading"><div><div class="breadcrumb">Police Portal / Case Map</div><h2>Case Map 🗺</h2><p>Visualize reported cases by location.</p></div></div>
+  <div class="panel map-panel">
+    <div class="map-toolbar"><span>Delhi NCR — Case Distribution</span><div><span class="legend lost">Lost</span><span class="legend found">Found</span><span class="legend matched">Matched</span></div></div>
+    <div class="fake-map"><div class="map-grid"></div><div class="map-label dwarka">Dwarka</div><div class="map-label janakpuri">Janakpuri</div><div class="map-label uttam">Uttam Nagar</div><div class="map-label pusa">Pusa</div><span class="map-pin pin1">📍</span><span class="map-pin pin2">📍</span><span class="map-pin pin3">📍</span><span class="map-pin pin4">📍</span></div>
+  </div>
+</section>
+
+<section class="page" id="verification">
+  <div class="page-heading"><div><div class="breadcrumb">Police Portal / Verification</div><h2>Pending Verification</h2><p>Review and verify reported items.</p></div></div>
+  <div class="verification-grid">
+    <div class="panel verification-card"><div class="verification-top"><span class="case-number">#SS-1025</span><span class="status pending">Pending</span></div><div class="item-preview">📱</div><h3>Mobile Phone</h3><p>Found by <strong>Vidit</strong></p><p>📍 Dwarka, New Delhi</p><p>📅 11 September 2026</p><div class="action-row"><button class="btn btn-success verify-btn">✓ Verify</button><button class="btn btn-outline reject-btn">Reject</button></div></div>
+    <div class="panel verification-card"><div class="verification-top"><span class="case-number">#SS-1021</span><span class="status pending">Pending</span></div><div class="item-preview">⌚</div><h3>Wrist Watch</h3><p>Found by <strong>Rahul</strong></p><p>📍 Dwarka, New Delhi</p><p>📅 10 September 2026</p><div class="action-row"><button class="btn btn-success verify-btn">✓ Verify</button><button class="btn btn-outline reject-btn">Reject</button></div></div>
+  </div>
+</section>
+
+<section class="page" id="alerts">
+  <div class="page-heading"><div><div class="breadcrumb">Police Portal / Alerts</div><h2>Alerts & Notifications 🔔</h2><p>Important system notifications.</p></div></div>
+  <div class="panel alerts-panel">
+    <div class="alert-item unread"><div class="alert-icon green">✓</div><div><strong>New Found Item Reported</strong><p>Case #SS-1025 has been submitted by Vidit.</p><small>2 minutes ago</small></div><button class="text-btn">View</button></div>
+    <div class="alert-item unread"><div class="alert-icon blue">🤖</div><div><strong>Smart Match Detected</strong><p>94% match detected between #SS-1024 and #SS-1025.</p><small>12 minutes ago</small></div><button class="text-btn" data-page-link="matching">Review</button></div>
+    <div class="alert-item"><div class="alert-icon orange">!</div><div><strong>Verification Pending</strong><p>5 cases require police verification.</p><small>32 minutes ago</small></div><button class="text-btn" data-page-link="verification">View</button></div>
+  </div>
+</section>
+
+<section class="page" id="analytics">
+  <div class="page-heading"><div><div class="breadcrumb">Police Portal / Analytics</div><h2>Analytics & Reports 📊</h2><p>Overview of Lost & Found performance.</p></div></div>
+  <div class="stats-grid">
+    <div class="stat-card blue"><div class="stat-icon">📋</div><div><span>Total Cases</span><strong>434</strong><small>All time</small></div></div>
+    <div class="stat-card green"><div class="stat-icon">✓</div><div><span>Cases Resolved</span><strong>142</strong><small>32.7% of total</small></div></div>
+    <div class="stat-card orange"><div class="stat-icon">⏳</div><div><span>Pending</span><strong>24</strong><small>Needs attention</small></div></div>
+    <div class="stat-card purple"><div class="stat-icon">⚡</div><div><span>Avg. Resolution</span><strong>2.4d</strong><small>↓ 18% improvement</small></div></div>
+  </div>
+  <div class="analytics-grid">
+    <div class="panel chart-panel"><div class="panel-header"><div><h3>Monthly Cases</h3><p>Lost vs Found reports</p></div></div><div class="bar-chart">
+      <div class="bar-group"><div class="bars"><span style="height:65%"></span><span style="height:45%"></span></div><label>Jan</label></div>
+      <div class="bar-group"><div class="bars"><span style="height:72%"></span><span style="height:54%"></span></div><label>Feb</label></div>
+      <div class="bar-group"><div class="bars"><span style="height:58%"></span><span style="height:62%"></span></div><label>Mar</label></div>
+      <div class="bar-group"><div class="bars"><span style="height:80%"></span><span style="height:68%"></span></div><label>Apr</label></div>
+      <div class="bar-group"><div class="bars"><span style="height:88%"></span><span style="height:75%"></span></div><label>May</label></div>
+      <div class="bar-group"><div class="bars"><span style="height:94%"></span><span style="height:82%"></span></div><label>Jun</label></div>
+    </div><div class="chart-legend"><span>● Lost Reports</span><span>● Found Reports</span></div></div>
+    <div class="panel"><div class="panel-header"><div><h3>Top Locations</h3><p>Cases by area</p></div></div><div class="location-bars">
+      <div><span>Dwarka</span><div><b style="width:82%"></b></div><strong>82</strong></div>
+      <div><span>Janakpuri</span><div><b style="width:68%"></b></div><strong>68</strong></div>
+      <div><span>Uttam Nagar</span><div><b style="width:51%"></b></div><strong>51</strong></div>
+      <div><span>Pusa</span><div><b style="width:39%"></b></div><strong>39</strong></div>
+    </div></div>
+  </div>
+</section>
+
+<section class="page" id="settings">
+  <div class="page-heading"><div><div class="breadcrumb">Police Portal / Settings</div><h2>Settings ⚙</h2><p>Manage police portal preferences.</p></div></div>
+  <div class="panel settings-panel">
+    <div class="setting-row"><div><strong>Notification Alerts</strong><p>Receive notifications for new cases and matches.</p></div><label class="switch"><input type="checkbox" checked><span></span></label></div>
+    <div class="setting-row"><div><strong>Smart Matching</strong><p>Enable AI-assisted case matching.</p></div><label class="switch"><input type="checkbox" checked><span></span></label></div>
+    <div class="setting-row"><div><strong>Auto Refresh</strong><p>Automatically refresh case information.</p></div><label class="switch"><input type="checkbox"><span></span></label></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<div class="toast" id="toast"><span id="toastIcon">✓</span><div><strong id="toastTitle">Success</strong><p id="toastMessage">Action completed successfully.</p></div></div>
+<script src="police.js"></script>
+</body>
+</html>

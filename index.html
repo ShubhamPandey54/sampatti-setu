@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SAMPATTI-SETU | Login</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- =====================================================
+         LEFT SIDE
+         ===================================================== -->
+
+    <section class="left-section">
+
+        <!-- Government Header -->
+
+        <div class="gov-header">
+
+            <img
+                src="emblem.png"
+                class="emblem"
+                alt="Government of India Emblem"
+            >
+
+            <div>
+
+                <div class="gov-hindi">
+                    दिल्ली पुलिस
+                </div>
+
+                <div class="gov-english">
+                    Delhi Police
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Main Branding -->
+
+        <div class="brand">
+
+            <div class="shield">
+
+                <div class="people">
+                    👥
+                </div>
+
+                <div class="bridge">
+                    ╱╲╱╲
+                </div>
+
+                <div class="tricolor">
+                    🟧 🟩
+                </div>
+
+            </div>
+
+
+            <h1>
+                SAMPATTI-SETU
+            </h1>
+
+            <h2>
+                सम्पत्ति सेतु
+            </h2>
+
+
+            <h3>
+                Smart Asset Matching, Police-<br>
+                inventory & Audit Tracking<br>
+                Technology Interface
+            </h3>
+
+
+            <p class="description">
+                Building a digital bridge between citizen complaints and
+                police Malkhana, ensuring faster recovery, accurate
+                matching and transparent tracking of assets.
+            </p>
+
+        </div>
+
+
+        <!-- Features -->
+
+        <div class="features">
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    🔍
+                </div>
+
+                <span>
+                    Report<br>
+                    Lost Property
+                </span>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    ▤
+                </div>
+
+                <span>
+                    Match with<br>
+                    Recovered Assets
+                </span>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    🛡
+                </div>
+
+                <span>
+                    Track in<br>
+                    Police Malkhana
+                </span>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    ▧
+                </div>
+
+                <span>
+                    Enable<br>
+                    Audit & Transparency
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Slogan -->
+
+        <div class="slogan">
+            Together for a Safer Tomorrow
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         RIGHT SIDE
+         ===================================================== -->
+
+    <section class="right-section">
+
+        <!-- Help -->
+
+        <div class="help">
+
+            <span>?</span>
+
+            Need Help?
+
+        </div>
+
+
+        <!-- =================================================
+             LOGIN CARD
+             ================================================= -->
+
+        <div class="login-card">
+
+
+            <!-- =================================================
+                 CITIZEN / POLICE SLIDER
+                 ================================================= -->
+
+            <div class="login-switch">
+
+                <div
+                    class="switch-slider"
+                    id="switchSlider"
+                ></div>
+
+
+                <button
+                    type="button"
+                    id="citizenTab"
+                    class="login-tab active"
+                >
+                    👤 Citizen
+                </button>
+
+
+                <button
+                    type="button"
+                    id="policeTab"
+                    class="login-tab"
+                >
+                    🛡 Police
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 LOGIN HEADING
+                 ================================================= -->
+
+            <div class="login-heading">
+
+                <div
+                    class="user-circle"
+                    id="loginIcon"
+                >
+                    ♧
+                </div>
+
+
+                <div>
+
+                    <h2 id="loginTitle">
+                        Citizen Login
+                    </h2>
+
+                    <p id="loginDescription">
+                        Access your account using your
+                        Aadhaar-linked mobile number
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 STEP 1
+                 ================================================= -->
+
+            <div class="step">
+
+                <div class="step-number">
+                    1
+                </div>
+
+
+                <div class="step-content">
+
+                    <h3 id="mobileLabel">
+                        Aadhaar-linked Mobile Number
+                    </h3>
+
+
+                    <p id="mobileDescription">
+                        Enter the 10-digit mobile number linked
+                        with your Aadhaar
+                    </p>
+
+
+                    <!-- Police ID -->
+
+                    <div
+                        id="policeIdBox"
+                        class="police-id-box hidden"
+                    >
+
+                        <input
+                            type="text"
+                            id="policeId"
+                            placeholder="Enter Police ID"
+                        >
+
+                    </div>
+
+
+                    <!-- Mobile -->
+
+                    <div class="mobile-box">
+
+                        <div class="country">
+
+                            🇮🇳
+
+                            <span>
+                                +91
+                            </span>
+
+                            <span>
+                                ⌄
+                            </span>
+
+                        </div>
+
+
+                        <input
+                            type="tel"
+                            id="mobile"
+                            maxlength="10"
+                            inputmode="numeric"
+                            placeholder="10 digit mobile number"
+                        >
+
+                    </div>
+
+
+                    <!-- Send OTP -->
+
+                    <button
+                        id="sendOtp"
+                        class="send-button"
+                        type="button"
+                    >
+                        Send OTP
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 STEP 2 — OTP
+                 ================================================= -->
+
+            <div
+                id="otpStep"
+                class="step hidden"
+            >
+
+                <div class="step-number">
+                    2
+                </div>
+
+
+                <div class="step-content">
+
+                    <h3>
+                        Enter OTP
+                    </h3>
+
+
+                    <p id="otpText">
+                        OTP sent to +91 ******1234
+                    </p>
+
+
+                    <!-- OTP Boxes -->
+
+                    <div class="otp-container">
+
+                        <input
+                            class="otp"
+                            maxlength="1"
+                            inputmode="numeric"
+                        >
+
+                        <input
+                            class="otp"
+                            maxlength="1"
+                            inputmode="numeric"
+                        >
+
+                        <input
+                            class="otp"
+                            maxlength="1"
+                            inputmode="numeric"
+                        >
+
+                        <input
+                            class="otp"
+                            maxlength="1"
+                            inputmode="numeric"
+                        >
+
+                        <input
+                            class="otp"
+                            maxlength="1"
+                            inputmode="numeric"
+                        >
+
+                        <input
+                            class="otp"
+                            maxlength="1"
+                            inputmode="numeric"
+                        >
+
+                    </div>
+
+
+                    <!-- Timer -->
+
+                    <div class="resend">
+
+                        ◷
+
+                        <span id="timer">
+                            Resend OTP in 00:45
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 STEP 3 — CAPTCHA
+                 ================================================= -->
+
+            <div
+                id="captchaStep"
+                class="step hidden"
+            >
+
+                <div class="step-number">
+                    3
+                </div>
+
+
+                <div class="step-content">
+
+                    <h3>
+                        Verify CAPTCHA
+                    </h3>
+
+
+                    <p>
+                        Please enter the text shown in the image
+                    </p>
+
+
+                    <!-- CAPTCHA -->
+
+                    <div class="captcha-row">
+
+                        <div
+                            id="captchaText"
+                            class="captcha"
+                        >
+                            8 Q K R G
+                        </div>
+
+
+                        <button
+                            id="refreshCaptcha"
+                            class="refresh"
+                            type="button"
+                        >
+                            ⟳ &nbsp;Refresh
+                        </button>
+
+                    </div>
+
+
+                    <!-- CAPTCHA Input -->
+
+                    <input
+                        type="text"
+                        id="captchaInput"
+                        class="captcha-input"
+                        placeholder="Enter CAPTCHA"
+                    >
+
+
+                    <!-- Verify -->
+
+                    <button
+                        id="verifyButton"
+                        class="verify-button"
+                        type="button"
+                    >
+                        🛡 &nbsp; Verify & Login
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Status -->
+
+            <div id="status"></div>
+
+
+
+            <!-- Security -->
+
+            <div class="security">
+
+                🔒
+
+                <span>
+                    Your information is secure and encrypted
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delhi Police - Official Found Property Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dpNavy: '#0A192F',
+                        dpBlue: '#1E3A8A',
+                        dpLightBlue: '#3B82F6',
+                        dpGold: '#D97706',
+                        dpGoldHover: '#B45309',
+                        dpGoldLight: '#FEF3C7',
+                        dpBg: '#F8FAFC'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .step-active { background-color: #1E3A8A; color: white; border-color: #1E3A8A; }
+        .step-completed { background-color: #D97706; color: white; border-color: #D97706; }
+        .step-pending { background-color: #F1F5F9; color: #64748B; border-color: #CBD5E1; }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-dpBg font-sans text-slate-800 min-h-screen flex flex-col">
+
+    <!-- TOP GOVT BANNER -->
+    <div class="bg-dpNavy text-white text-xs py-1.5 px-4 flex justify-between items-center border-b border-dpGold/30">
+        <div class="flex items-center space-x-2">
+            <span class="font-semibold tracking-wider">GOVERNMENT OF NCT OF DELHI</span>
+            <span>|</span>
+            <span class="text-slate-300">DELHI POLICE INTERNAL PORTAL</span>
+        </div>
+        <div class="flex items-center space-x-4 text-xs">
+            <span class="bg-red-600 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide">POLICE CONTROL ROOM: 112</span>
+            <span class="hidden md:inline text-slate-300">Internal Helpline: 1093</span>
+        </div>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-4 cursor-pointer" onclick="switchTab('register')">
+                <div class="w-12 h-12 bg-dpNavy rounded-full flex items-center justify-center border-2 border-dpGold shadow-inner">
+                    <i class="fa-solid font-bold text-2xl text-dpGold fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-dpNavy tracking-tight leading-none uppercase">Delhi Police</h1>
+                    <p class="text-xs font-bold text-dpGold tracking-wider uppercase">Police Property & Malkhana Portal</p>
+                </div>
+            </div>
+
+            <!-- NAV TABS -->
+            <nav class="flex items-center space-x-1 sm:space-x-2">
+                <button id="nav-register" onclick="switchTab('register')" class="px-3 py-2 rounded-lg text-sm font-semibold text-dpBlue bg-blue-50 border border-blue-200 transition">
+                    <i class="fa-solid fa-plus-circle mr-1.5"></i>Register Found Item
+                </button>
+                <button id="nav-track" onclick="switchTab('track')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-magnifying-glass mr-1.5"></i>Track Status
+                </button>
+                <button id="nav-police" onclick="switchTab('police')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-user-shield mr-1.5"></i>Police Dashboard
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ========================================================================= -->
+        <!-- TAB 1: POLICE FOUND PROPERTY REGISTRATION WORKFLOW -->
+        <!-- ========================================================================= -->
+        <section id="tab-register" class="space-y-6">
+            
+            <!-- FORM CONTAINER CARD -->
+            <div id="registration-form-card" class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                
+                <!-- HEADER & STEP PROGRESS BAR -->
+                <div class="bg-dpNavy text-white p-6 border-b border-dpGold/40">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold">Found Property Official Registration</h2>
+                            <p class="text-slate-300 text-sm mt-1">Official entry form for found, seized, or surrendered property by police officers.</p>
+                        </div>
+                        <span class="hidden sm:inline-block bg-dpGold/20 text-dpGold border border-dpGold px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+                            Police Official Portal
+                        </span>
+                    </div>
+
+                    <!-- STEP INDICATOR -->
+                    <div class="grid grid-cols-4 gap-2 text-center text-xs font-semibold">
+                        <div id="step-indicator-1" class="flex flex-col items-center gap-1">
+                            <div id="step-circle-1" class="w-8 h-8 rounded-full border-2 flex items-center justify-center step-active font-bold">1</div>
+                            <span id="step-text-1" class="text-white hidden sm:inline">Item Details</span>
+                        </div>
+                        <div id="step-indicator-2" class="flex flex-col items-center gap-1">
+                            <div id="step-circle-2" class="w-8 h-8 rounded-full border-2 flex items-center justify-center step-pending font-bold">2</div>
+                            <span id="step-text-2" class="text-slate-400 hidden sm:inline">Live Photos</span>
+                        </div>
+                        <div id="step-indicator-3" class="flex flex-col items-center gap-1">
+                            <div id="step-circle-3" class="w-8 h-8 rounded-full border-2 flex items-center justify-center step-pending font-bold">3</div>
+                            <span id="step-text-3" class="text-slate-400 hidden sm:inline">Location / PS Code</span>
+                        </div>
+                        <div id="step-indicator-4" class="flex flex-col items-center gap-1">
+                            <div id="step-circle-4" class="w-8 h-8 rounded-full border-2 flex items-center justify-center step-pending font-bold">4</div>
+                            <span id="step-text-4" class="text-slate-400 hidden sm:inline">Review & Submit</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORM BODY -->
+                <div class="p-6 sm:p-8">
+                    
+                    <!-- STEP 1: ITEM DETAILS -->
+                    <div id="step-content-1" class="space-y-6">
+                        <h3 class="text-lg font-bold text-dpNavy border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-box text-dpGold"></i> Step 1: Provide Item Details
+                        </h3>
+
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">
+                                Item Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="reg-item-name" placeholder='e.g., "Black Leather Wallet", "iPhone 13 with Blue Case"'
+                                class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-dpBlue focus:border-dpBlue outline-none transition text-sm">
+                        </div>
+
+                        <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Detailed Characteristics</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Brand</label>
+                                    <input type="text" id="reg-brand" placeholder="e.g., Apple, Wildhorn, Titan" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Color</label>
+                                    <input type="text" id="reg-color" placeholder="e.g., Black, Navy Blue, Silver" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Model</label>
+                                    <input type="text" id="reg-model" placeholder="e.g., A2633, Slimfold 2022" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Serial / IMEI Number (if applicable)</label>
+                                    <input type="text" id="reg-serial" placeholder="e.g., 358209110293841" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Condition</label>
+                                    <select id="reg-condition" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm bg-white">
+                                        <option value="Good / Intact">Good / Intact</option>
+                                        <option value="Slightly Damaged">Slightly Damaged</option>
+                                        <option value="Heavily Damaged">Heavily Damaged</option>
+                                        <option value="Locked / Sealed">Locked / Sealed</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Distinguishing Marks / Scratches</label>
+                                    <input type="text" id="reg-marks" placeholder="e.g., Sticker on back, scratched screen edge" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">
+                                    Full Description <span class="text-red-500">*</span>
+                                </label>
+                                <textarea id="reg-description" rows="3" placeholder="Provide a detailed official description of where and how the item was recovered or deposited." 
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-dpBlue outline-none transition text-sm"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button onclick="goToStep(2)" class="bg-dpBlue hover:bg-dpNavy text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition flex items-center gap-2">
+                                Next: Live Photos <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: LIVE PHOTOS -->
+                    <div id="step-content-2" class="space-y-6 hidden">
+                        <h3 class="text-lg font-bold text-dpNavy border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-camera text-dpGold"></i> Step 2: Upload Live Photos
+                        </h3>
+
+                        <div class="bg-amber-50 border-l-4 border-dpGold p-4 rounded-r-lg">
+                            <p class="text-xs text-amber-900 font-medium">
+                                <strong>Instructions:</strong> Upload clear photos from multiple angles (Front, Back, Side, Close-up of markings, Serial number).
+                            </p>
+                        </div>
+
+                        <!-- UPLOAD / CAMERA ZONE -->
+                        <div class="border-2 border-dashed border-slate-300 hover:border-dpBlue bg-slate-50 rounded-2xl p-6 text-center transition">
+                            <div class="max-w-xs mx-auto space-y-3">
+                                <div class="w-12 h-12 bg-blue-100 text-dpBlue rounded-full flex items-center justify-center mx-auto">
+                                    <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                                </div>
+                                <p class="text-sm font-semibold text-slate-700">Drag & drop photos or select from device</p>
+                                
+                                <div class="flex justify-center gap-3">
+                                    <label class="cursor-pointer bg-dpBlue hover:bg-dpNavy text-white px-4 py-2 rounded-lg text-xs font-semibold transition">
+                                        Browse Files
+                                        <input type="file" id="photo-file-input" accept="image/*" multiple class="hidden" onchange="handleFileSelect(event)">
+                                    </label>
+                                    <button onclick="openCameraModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                                        <i class="fa-solid fa-camera"></i> Camera Capture
+                                    </button>
+                                </div>
+                                <p class="text-[11px] text-slate-400">Supported: JPG, PNG, WEBP (At least 1 photo required)</p>
+                            </div>
+                        </div>
+
+                        <!-- PHOTO THUMBNAILS GRID -->
+                        <div>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Uploaded Images (<span id="photo-count">0</span>)</h4>
+                            <div id="photo-thumbnails" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4 min-h-[100px] bg-slate-100 p-4 rounded-xl border border-slate-200">
+                                <div id="no-photos-msg" class="col-span-full flex flex-col items-center justify-center text-slate-400 py-6">
+                                    <i class="fa-solid fa-images text-3xl mb-2"></i>
+                                    <span class="text-xs">No photos uploaded yet.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between pt-4 border-t">
+                            <button onclick="goToStep(1)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-6 py-2.5 rounded-lg font-semibold text-sm transition">
+                                <i class="fa-solid fa-arrow-left mr-1"></i> Back
+                            </button>
+                            <button onclick="goToStep(3)" class="bg-dpBlue hover:bg-dpNavy text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition flex items-center gap-2">
+                                Next: Location & PS Code <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: LOCATION / PS CODE -->
+                    <div id="step-content-3" class="space-y-6 hidden">
+                        <h3 class="text-lg font-bold text-dpNavy border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-dpGold"></i> Step 3: Location / Police Station Code
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">
+                                    Enter Police Station Code (PS Code) <span class="text-red-500">*</span>
+                                </label>
+                                <p class="text-xs text-slate-500 mb-2">Select or enter the 6-digit Delhi Police Station Code for jurisdiction.</p>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <select id="reg-ps-select" onchange="syncPsCode(this.value)" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm bg-white font-medium">
+                                            <option value="">-- Select Police Station --</option>
+                                            <option value="110001">110001 - Connaught Place PS</option>
+                                            <option value="110002">110002 - Daryaganj PS</option>
+                                            <option value="110006">110006 - Chandni Chowk PS</option>
+                                            <option value="110016">110016 - Hauz Khas PS</option>
+                                            <option value="110021">110021 - Chanakyapuri PS</option>
+                                            <option value="110075">110075 - Dwarka Sector-23 PS</option>
+                                            <option value="110085">110085 - Rohini Sector-18 PS</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <input type="text" id="reg-ps-code" placeholder="Or type 6-digit PS Code (e.g. 110001)" maxlength="6"
+                                            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-dpBlue text-sm font-mono tracking-wider">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                                <h4 class="text-xs font-bold text-dpNavy uppercase mb-2">Location Context Summary</h4>
+                                <p class="text-xs text-slate-600">Ensure the PS code correctly maps to the station where the item will be cataloged into the Malkhana repository.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between pt-4 border-t">
+                            <button onclick="goToStep(2)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-6 py-2.5 rounded-lg font-semibold text-sm transition">
+                                <i class="fa-solid fa-arrow-left mr-1"></i> Back
+                            </button>
+                            <button onclick="goToStep(4)" class="bg-dpBlue hover:bg-dpNavy text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition flex items-center gap-2">
+                                Next: Review & Submit <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: REVIEW & SUBMIT -->
+                    <div id="step-content-4" class="space-y-6 hidden">
+                        <h3 class="text-lg font-bold text-dpNavy border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-check text-dpGold"></i> Step 4: Review Registration Details
+                        </h3>
+
+                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4 border-b border-slate-200">
+                                <div>
+                                    <span class="text-xs font-bold uppercase text-slate-400">Item Name</span>
+                                    <p id="rev-item-name" class="font-bold text-slate-800 text-base">-</p>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-bold uppercase text-slate-400">PS Code</span>
+                                    <p id="rev-ps-code" class="font-bold text-slate-800 text-base font-mono">-</p>
+                                </div>
+                            </div>
+
+                            <div class="pb-4 border-b border-slate-200">
+                                <span class="text-xs font-bold uppercase text-slate-400">Description & Specs</span>
+                                <p id="rev-description" class="text-sm text-slate-700 mt-1 whitespace-pre-line">-</p>
+                                <div id="rev-specs-badges" class="flex flex-wrap gap-2 mt-3"></div>
+                            </div>
+
+                            <div>
+                                <span class="text-xs font-bold uppercase text-slate-400 block mb-2">Attached Photos (<span id="rev-photo-count">0</span>)</span>
+                                <div id="rev-photo-preview" class="flex gap-2 overflow-x-auto pb-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- CONFIRMATION DECLARATION -->
+                        <div class="flex items-start gap-3 bg-amber-50 p-4 rounded-xl border border-amber-200">
+                            <input type="checkbox" id="reg-declaration" class="mt-1 w-4 h-4 text-dpBlue rounded">
+                            <label for="reg-declaration" class="text-xs text-amber-900 leading-relaxed cursor-pointer">
+                                I confirm that these details are accurate and logged in accordance with police property entry protocols.
+                            </label>
+                        </div>
+
+                        <div class="flex justify-between pt-4 border-t">
+                            <button onclick="goToStep(3)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-6 py-2.5 rounded-lg font-semibold text-sm transition">
+                                <i class="fa-solid fa-arrow-left mr-1"></i> Back
+                            </button>
+                            <button onclick="submitRegistration()" class="bg-dpGold hover:bg-dpGoldHover text-white px-8 py-3 rounded-lg font-bold text-sm shadow-md transition flex items-center gap-2">
+                                <i class="fa-solid fa-shield-check"></i> Confirm & Register Found Property
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SUCCESS SCREEN -->
+            <div id="registration-success-card" class="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 text-center space-y-6 hidden">
+                <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                    <i class="fa-solid fa-check text-4xl"></i>
+                </div>
+
+                <div>
+                    <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Official Entry Logged</span>
+                    <h2 class="text-2xl font-extrabold text-dpNavy mt-2">Found Property Registered Successfully</h2>
+                    <p class="text-sm text-slate-500 mt-1">Property recorded into the system with generated Tracker ID.</p>
+                </div>
+
+                <!-- TRACKER ID DISPLAY BOX -->
+                <div class="bg-dpNavy text-white p-6 rounded-2xl border-2 border-dpGold max-w-md mx-auto shadow-lg space-y-2">
+                    <span class="text-xs font-semibold text-dpGold tracking-widest uppercase">Official Tracker ID</span>
+                    <div id="success-tracker-id" class="text-2xl sm:text-3xl font-black font-mono tracking-wider text-white">FOUND-110001-XXXXX</div>
+                    <p class="text-[11px] text-slate-300">Generated on <span id="success-timestamp"></span></p>
+                </div>
+
+                <!-- SUMMARY DETAILS TABLE -->
+                <div class="max-w-lg mx-auto bg-slate-50 p-4 rounded-xl border border-slate-200 text-left text-xs space-y-2">
+                    <div class="flex justify-between border-b pb-1">
+                        <span class="text-slate-500 font-medium">Item Name:</span>
+                        <span id="succ-item-name" class="font-bold text-slate-800"></span>
+                    </div>
+                    <div class="flex justify-between border-b pb-1">
+                        <span class="text-slate-500 font-medium">PS Jurisdiction:</span>
+                        <span id="succ-ps-code" class="font-bold text-slate-800 font-mono"></span>
+                    </div>
+                    <div class="flex justify-between border-b pb-1">
+                        <span class="text-slate-500 font-medium">Photos Uploaded:</span>
+                        <span id="succ-photo-count" class="font-bold text-slate-800"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500 font-medium">Status:</span>
+                        <span class="text-blue-600 font-bold">Property Registered</span>
+                    </div>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="flex flex-wrap justify-center gap-3 pt-4">
+                    <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-lg text-xs font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i> Download / Print Receipt
+                    </button>
+                    <button onclick="trackGeneratedId()" class="bg-dpBlue hover:bg-dpNavy text-white px-5 py-2.5 rounded-lg text-xs font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-route"></i> Track Property
+                    </button>
+                    <button onclick="resetRegistrationForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-5 py-2.5 rounded-lg text-xs font-semibold transition">
+                        Register Another Item
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 2: PROPERTY TRACKING PAGE -->
+        <!-- ========================================================================= -->
+        <section id="tab-track" class="space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 sm:p-8">
+                <div class="max-w-xl mx-auto text-center space-y-4">
+                    <div class="w-12 h-12 bg-blue-50 text-dpBlue rounded-full flex items-center justify-center mx-auto">
+                        <i class="fa-solid fa-magnifying-glass text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-dpNavy">Track Property Status</h2>
+                    <p class="text-xs text-slate-500">Enter Tracker ID to inspect verification stage and custodial logs.</p>
+
+                    <div class="flex gap-2">
+                        <input type="text" id="track-search-input" placeholder="e.g. FOUND-110001-48291" 
+                            class="flex-1 px-4 py-3 border border-slate-300 rounded-xl font-mono text-sm uppercase tracking-wider focus:ring-2 focus:ring-dpBlue outline-none">
+                        <button onclick="searchTracker()" class="bg-dpBlue hover:bg-dpNavy text-white px-6 py-3 rounded-xl font-bold text-sm transition">
+                            Track
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TRACKING RESULTS CONTAINER -->
+                <div id="tracking-result" class="mt-10 pt-8 border-t border-slate-200 hidden">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-8 flex flex-wrap justify-between items-center gap-4">
+                        <div>
+                            <span class="text-xs font-bold text-dpGold uppercase tracking-wider">Tracker ID</span>
+                            <h3 id="track-res-id" class="text-xl font-black font-mono text-dpNavy">FOUND-110001-48291</h3>
+                            <p id="track-res-name" class="text-sm font-semibold text-slate-700 mt-1">iPhone 13 with Blue Case</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-slate-400 block">Assigned Police Station</span>
+                            <span id="track-res-ps" class="text-sm font-bold text-slate-800 font-mono">110001 (Connaught Place)</span>
+                        </div>
+                    </div>
+
+                    <!-- VISUAL STATUS TIMELINE -->
+                    <h4 class="text-sm font-bold text-dpNavy mb-6 uppercase tracking-wider">Status Timeline</h4>
+                    <div id="timeline-container" class="relative pl-6 sm:pl-8 border-l-2 border-slate-200 space-y-8 ml-2 sm:ml-4">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 3: POLICE DASHBOARD -->
+        <!-- ========================================================================= -->
+        <section id="tab-police" class="space-y-6 hidden">
+            <!-- POLICE HEADER BANNER -->
+            <div class="bg-dpNavy text-white p-6 rounded-2xl border-2 border-dpGold flex flex-wrap justify-between items-center gap-4 shadow-md">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-dpGold text-dpNavy font-extrabold text-[10px] px-2 py-0.5 rounded uppercase">Official Use Only</span>
+                        <h2 class="text-xl font-bold">Delhi Police Malkhana Dashboard</h2>
+                    </div>
+                    <p class="text-xs text-slate-300 mt-1">Property Verification, Match Making & Audit System</p>
+                </div>
+                <div class="text-xs text-right">
+                    <span class="text-slate-400 block">Logged in Officer:</span>
+                    <span class="font-bold text-dpGold">Ins. Rajesh Kumar (ID: DP-8821)</span>
+                </div>
+            </div>
+
+            <!-- DASHBOARD CONTROLS / FILTERS -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-wrap justify-between items-center gap-4">
+                <div class="flex flex-wrap gap-2 flex-1">
+                    <input type="text" id="police-search-id" placeholder="Search Tracker ID..." class="px-3 py-2 border rounded-lg text-xs font-mono w-48">
+                    <select id="police-filter-ps" class="px-3 py-2 border rounded-lg text-xs bg-white">
+                        <option value="">All PS Codes</option>
+                        <option value="110001">110001 - Connaught Place</option>
+                        <option value="110002">110002 - Daryaganj</option>
+                    </select>
+                </div>
+                <button onclick="renderPoliceDashboard()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-slate-900 transition">
+                    <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh Table
+                </button>
+            </div>
+
+            <!-- TABLE OF REGISTERED PROPERTIES -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-3">Tracker ID</th>
+                                <th class="p-3">Item Details</th>
+                                <th class="p-3">PS Code</th>
+                                <th class="p-3">Photos</th>
+                                <th class="p-3">Current Status</th>
+                                <th class="p-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="police-table-body" class="divide-y divide-slate-100">
+                            <!-- Rendered dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CAMERA CAPTURE MODAL -->
+    <div id="camera-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-2xl max-w-md w-full space-y-4">
+            <h3 class="text-base font-bold text-dpNavy flex items-center gap-2">
+                <i class="fa-solid fa-camera text-dpGold"></i> Live Camera Capture
+            </h3>
+            <div class="bg-black rounded-xl overflow-hidden aspect-video flex items-center justify-center relative">
+                <video id="webcam-feed" autoplay playsinline class="w-full h-full object-cover"></video>
+                <canvas id="camera-canvas" class="hidden"></canvas>
+            </div>
+            <div class="flex justify-between">
+                <button onclick="closeCameraModal()" class="px-4 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg">Cancel</button>
+                <button onclick="captureCameraPhoto()" class="px-5 py-2 bg-dpBlue text-white text-xs font-semibold rounded-lg hover:bg-dpNavy">Capture</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POLICE DETAIL & STATUS UPDATE MODAL -->
+    <div id="police-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-6">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-base font-bold text-dpNavy">Police Property Management & Audit</h3>
+                <button onclick="closePoliceModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div id="police-modal-content" class="space-y-4 text-xs">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-dpNavy text-white border-t-4 border-dpGold py-6 mt-12 text-xs">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="font-semibold text-slate-300">Official Portal of Delhi Police — Lost & Found Property Management System</p>
+            <p class="text-slate-500">Designed in compliance with Delhi Police Public IT Standards. For official inquiries contact support@delhipolice.gov.in</p>
+            <p class="text-[10px] text-slate-600">Privacy Policy: No personal sensitive identifiers stored.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let currentStep = 1;
+        let uploadedPhotos = [];
+        let cameraStream = null;
+        let generatedTrackerId = "";
+
+        let propertyDatabase = [
+            {
+                trackerId: "FOUND-110001-48291",
+                itemName: "iPhone 13 with Blue Case",
+                brand: "Apple",
+                color: "Blue",
+                model: "A2633",
+                serial: "358209110293841",
+                condition: "Good / Intact",
+                marks: "Tiny scratch on top rim",
+                description: "Recovered at Connaught Place Inner Circle.",
+                psCode: "110001",
+                photos: [
+                    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' bg='%23e2e8f0'><rect width='100%' height='100%' fill='%233b82f6'/><text x='50%' y='50%' fill='white' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16'>iPhone Photo 1</text></svg>"
+                ],
+                timestamp: new Date().toLocaleString(),
+                statusCode: 3,
+                auditLog: [
+                    { time: new Date().toLocaleString(), note: "Property registered in official database." },
+                    { time: new Date().toLocaleString(), note: "Verified by Duty Officer at CP Station." },
+                    { time: new Date().toLocaleString(), note: "Deposited into Station Malkhana Box #A-12." }
+                ]
+            }
+        ];
+
+        const STATUS_STAGES = [
+            "Property Registered",
+            "Submitted for Police Verification",
+            "Added to Police Malkhana",
+            "Matched / Identification in Progress",
+            "Claim Verification",
+            "Returned / Case Closed"
+        ];
+
+        function switchTab(tabName) {
+            ['register', 'track', 'police'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${t}`);
+                btn.className = "px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition";
+            });
+
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabName}`);
+            activeBtn.className = "px-3 py-2 rounded-lg text-sm font-semibold text-dpBlue bg-blue-50 border border-blue-200 transition";
+
+            if (tabName === 'police') {
+                renderPoliceDashboard();
+            }
+        }
+
+        function goToStep(step) {
+            if (step > currentStep) {
+                if (currentStep === 1) {
+                    const name = document.getElementById('reg-item-name').value.trim();
+                    const desc = document.getElementById('reg-description').value.trim();
+                    if (!name || !desc) {
+                        showToast("Please fill in required fields (Item Name and Description).", "error");
+                        return;
+                    }
+                }
+                if (currentStep === 2) {
+                    if (uploadedPhotos.length === 0) {
+                        showToast("At least one photo is required to proceed.", "error");
+                        return;
+                    }
+                }
+                if (currentStep === 3) {
+                    const ps = document.getElementById('reg-ps-code').value.trim();
+                    if (!ps || ps.length !== 6 || isNaN(ps)) {
+                        showToast("Please enter a valid 6-digit Police Station code.", "error");
+                        return;
+                    }
+                }
+            }
+
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`step-content-${i}`).classList.add('hidden');
+                const circle = document.getElementById(`step-circle-${i}`);
+                const text = document.getElementById(`step-text-${i}`);
+                
+                if (i < step) {
+                    circle.className = "w-8 h-8 rounded-full border-2 flex items-center justify-center step-completed font-bold";
+                    circle.innerHTML = `<i class="fa-solid fa-check"></i>`;
+                } else if (i === step) {
+                    circle.className = "w-8 h-8 rounded-full border-2 flex items-center justify-center step-active font-bold";
+                    circle.innerHTML = i;
+                    if (text) text.className = "text-white font-bold hidden sm:inline";
+                } else {
+                    circle.className = "w-8 h-8 rounded-full border-2 flex items-center justify-center step-pending font-bold";
+                    circle.innerHTML = i;
+                    if (text) text.className = "text-slate-400 hidden sm:inline";
+                }
+            }
+
+            document.getElementById(`step-content-${step}`).classList.remove('hidden');
+            currentStep = step;
+
+            if (step === 4) {
+                populateReviewPage();
+            }
+        }
+
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedPhotos.push(e.target.result);
+                    renderPhotoThumbnails();
+                };
+                reader.readAsDataURL(file);
+            });
+            showToast("Photo(s) added successfully.");
+        }
+
+        function renderPhotoThumbnails() {
+            const container = document.getElementById('photo-thumbnails');
+            document.getElementById('photo-count').innerText = uploadedPhotos.length;
+
+            if (uploadedPhotos.length === 0) {
+                container.innerHTML = `
+                    <div id="no-photos-msg" class="col-span-full flex flex-col items-center justify-center text-slate-400 py-6">
+                        <i class="fa-solid fa-images text-3xl mb-2"></i>
+                        <span class="text-xs">No photos uploaded yet.</span>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = "";
+            uploadedPhotos.forEach((src, idx) => {
+                const div = document.createElement('div');
+                div.className = "relative group rounded-lg overflow-hidden border border-slate-300 aspect-square bg-slate-200";
+                div.innerHTML = `
+                    <img src="${src}" class="w-full h-full object-cover">
+                    <button onclick="removePhoto(${idx})" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] opacity-90 hover:opacity-100 transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function removePhoto(idx) {
+            uploadedPhotos.splice(idx, 1);
+            renderPhotoThumbnails();
+        }
+
+        async function openCameraModal() {
+            const modal = document.getElementById('camera-modal');
+            const video = document.getElementById('webcam-feed');
+            modal.classList.remove('hidden');
+
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = cameraStream;
+            } catch (err) {
+                showToast("Camera access denied or unavailable.", "error");
+                closeCameraModal();
+            }
+        }
+
+        function closeCameraModal() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+            }
+            document.getElementById('camera-modal').classList.add('hidden');
+        }
+
+        function captureCameraPhoto() {
+            const video = document.getElementById('webcam-feed');
+            const canvas = document.getElementById('camera-canvas');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const dataUrl = canvas.toDataURL('image/png');
+            uploadedPhotos.push(dataUrl);
+            renderPhotoThumbnails();
+            showToast("Camera photo captured.");
+            closeCameraModal();
+        }
+
+        function syncPsCode(val) {
+            if (val) document.getElementById('reg-ps-code').value = val;
+        }
+
+        function populateReviewPage() {
+            document.getElementById('rev-item-name').innerText = document.getElementById('reg-item-name').value;
+            document.getElementById('rev-ps-code').innerText = document.getElementById('reg-ps-code').value;
+            document.getElementById('rev-description').innerText = document.getElementById('reg-description').value;
+
+            const specs = document.getElementById('rev-specs-badges');
+            specs.innerHTML = "";
+            const keys = ['brand', 'color', 'model', 'serial', 'condition', 'marks'];
+            keys.forEach(k => {
+                const val = document.getElementById(`reg-${k}`).value;
+                if (val) {
+                    specs.innerHTML += `<span class="bg-blue-100 text-dpNavy text-[11px] font-semibold px-2.5 py-1 rounded-full border border-blue-200">${k.toUpperCase()}: ${val}</span>`;
+                }
+            });
+
+            document.getElementById('rev-photo-count').innerText = uploadedPhotos.length;
+            const photoPreview = document.getElementById('rev-photo-preview');
+            photoPreview.innerHTML = "";
+            uploadedPhotos.forEach(src => {
+                photoPreview.innerHTML += `<img src="${src}" class="w-16 h-16 object-cover rounded-lg border">`;
+            });
+        }
+
+        function submitRegistration() {
+            const declaration = document.getElementById('reg-declaration').checked;
+            if (!declaration) {
+                showToast("Please check the confirmation declaration box.", "error");
+                return;
+            }
+
+            const psCode = document.getElementById('reg-ps-code').value.trim();
+            const randomNum = Math.floor(10000 + Math.random() * 90000);
+            generatedTrackerId = `FOUND-${psCode}-${randomNum}`;
+            const timestamp = new Date().toLocaleString();
+
+            const record = {
+                trackerId: generatedTrackerId,
+                itemName: document.getElementById('reg-item-name').value,
+                brand: document.getElementById('reg-brand').value,
+                color: document.getElementById('reg-color').value,
+                model: document.getElementById('reg-model').value,
+                serial: document.getElementById('reg-serial').value,
+                condition: document.getElementById('reg-condition').value,
+                marks: document.getElementById('reg-marks').value,
+                description: document.getElementById('reg-description').value,
+                psCode: psCode,
+                photos: [...uploadedPhotos],
+                timestamp: timestamp,
+                statusCode: 1,
+                auditLog: [{ time: timestamp, note: "Found property registered in official system." }]
+            };
+
+            propertyDatabase.unshift(record);
+
+            document.getElementById('registration-form-card').classList.add('hidden');
+            document.getElementById('registration-success-card').classList.remove('hidden');
+
+            document.getElementById('success-tracker-id').innerText = generatedTrackerId;
+            document.getElementById('success-timestamp').innerText = timestamp;
+            document.getElementById('succ-item-name').innerText = record.itemName;
+            document.getElementById('succ-ps-code').innerText = record.psCode;
+            document.getElementById('succ-photo-count').innerText = record.photos.length;
+
+            showToast("Property Registered Successfully!");
+        }
+
+        function resetRegistrationForm() {
+            uploadedPhotos = [];
+            currentStep = 1;
+            document.getElementById('reg-item-name').value = "";
+            document.getElementById('reg-description').value = "";
+            document.getElementById('reg-brand').value = "";
+            document.getElementById('reg-color').value = "";
+            document.getElementById('reg-model').value = "";
+            document.getElementById('reg-serial').value = "";
+            document.getElementById('reg-marks').value = "";
+            document.getElementById('reg-ps-code').value = "";
+            document.getElementById('reg-ps-select').value = "";
+            document.getElementById('reg-declaration').checked = false;
+
+            renderPhotoThumbnails();
+            document.getElementById('registration-success-card').classList.add('hidden');
+            document.getElementById('registration-form-card').classList.remove('hidden');
+            goToStep(1);
+        }
+
+        function trackGeneratedId() {
+            switchTab('track');
+            document.getElementById('track-search-input').value = generatedTrackerId;
+            searchTracker();
+        }
+
+        function searchTracker() {
+            const query = document.getElementById('track-search-input').value.trim().toUpperCase();
+            if (!query) {
+                showToast("Please enter a valid Tracker ID.", "error");
+                return;
+            }
+
+            const match = propertyDatabase.find(p => p.trackerId === query);
+            const container = document.getElementById('tracking-result');
+
+            if (!match) {
+                showToast("Tracker ID not found in records.", "error");
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            document.getElementById('track-res-id').innerText = match.trackerId;
+            document.getElementById('track-res-name').innerText = match.itemName;
+            document.getElementById('track-res-ps').innerText = `${match.psCode} PS Jurisdiction`;
+
+            const timeline = document.getElementById('timeline-container');
+            timeline.innerHTML = "";
+
+            STATUS_STAGES.forEach((stage, idx) => {
+                const stageNum = idx + 1;
+                const isCompleted = stageNum <= match.statusCode;
+                const isCurrent = stageNum === match.statusCode;
+
+                let iconClass = isCompleted ? "bg-green-600 text-white" : "bg-slate-200 text-slate-400";
+                if (isCurrent) iconClass = "bg-dpGold text-white ring-4 ring-amber-100";
+
+                timeline.innerHTML += `
+                    <div class="relative flex items-start group">
+                        <div class="absolute -left-[31px] sm:-left-[39px] top-0 w-6 h-6 sm:w-8 sm:h-8 rounded-full ${iconClass} flex items-center justify-center text-xs font-bold transition">
+                            ${isCompleted ? '<i class="fa-solid fa-check"></i>' : stageNum}
+                        </div>
+                        <div class="pl-2">
+                            <h5 class="text-sm font-bold ${isCompleted ? 'text-slate-800' : 'text-slate-400'}">${stage}</h5>
+                            <p class="text-xs text-slate-500 mt-0.5">
+                                ${isCurrent ? 'Current Status — Processing with Station Malkhana' : (isCompleted ? 'Completed' : 'Pending')}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderPoliceDashboard() {
+            const tbody = document.getElementById('police-table-body');
+            const searchId = document.getElementById('police-search-id').value.trim().toUpperCase();
+            const filterPs = document.getElementById('police-filter-ps').value;
+
+            tbody.innerHTML = "";
+
+            let filtered = propertyDatabase.filter(item => {
+                const matchId = !searchId || item.trackerId.includes(searchId);
+                const matchPs = !filterPs || item.psCode === filterPs;
+                return matchId && matchPs;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">No registered found items matching search criteria.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-3 font-mono font-bold text-dpBlue">${item.trackerId}</td>
+                        <td class="p-3">
+                            <span class="font-bold block text-slate-800">${item.itemName}</span>
+                            <span class="text-[10px] text-slate-500">${item.brand || 'No Brand'} | ${item.color || 'No Color'}</span>
+                        </td>
+                        <td class="p-3 font-mono">${item.psCode}</td>
+                        <td class="p-3">
+                            <div class="flex -space-x-2">
+                                ${item.photos.map(p => `<img src="${p}" class="w-7 h-7 rounded-full border-2 border-white object-cover">`).join('')}
+                            </div>
+                        </td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 rounded-full text-[10px] font-bold ${item.statusCode === 6 ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">
+                                ${STATUS_STAGES[item.statusCode - 1]}
+                            </span>
+                        </td>
+                        <td class="p-3">
+                            <button onclick="openPoliceModal('${item.trackerId}')" class="bg-dpNavy hover:bg-dpBlue text-white px-3 py-1.5 rounded text-[11px] font-semibold transition">
+                                Manage / Audit
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openPoliceModal(trackerId) {
+            const item = propertyDatabase.find(p => p.trackerId === trackerId);
+            if (!item) return;
+
+            const modal = document.getElementById('police-modal');
+            const content = document.getElementById('police-modal-content');
+
+            content.innerHTML = `
+                <div class="bg-slate-50 p-4 rounded-xl border space-y-2">
+                    <div class="flex justify-between">
+                        <span class="font-bold text-slate-500">Tracker ID:</span>
+                        <span class="font-mono font-bold text-dpBlue">${item.trackerId}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-bold text-slate-500">Item Name:</span>
+                        <span class="font-bold">${item.itemName}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-bold text-slate-500">Registration Time:</span>
+                        <span>${item.timestamp}</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-700 mb-1">Item Photos (${item.photos.length})</h4>
+                    <div class="flex gap-2 overflow-x-auto pb-2">
+                        ${item.photos.map(p => `<img src="${p}" class="w-20 h-20 object-cover rounded-lg border">`).join('')}
+                    </div>
+                </div>
+
+                <div class="space-y-2 bg-blue-50 p-4 rounded-xl border border-blue-200">
+                    <h4 class="font-bold text-dpNavy">Update Malkhana / Case Status</h4>
+                    <select id="update-status-select" class="w-full p-2 border rounded-lg bg-white text-xs">
+                        ${STATUS_STAGES.map((s, idx) => `<option value="${idx+1}" ${item.statusCode === idx+1 ? 'selected' : ''}>${idx+1}. ${s}</option>`).join('')}
+                    </select>
+                    <textarea id="update-audit-note" placeholder="Enter officer audit remark or matching note..." class="w-full p-2 border rounded-lg text-xs"></textarea>
+                    <button onclick="savePoliceStatus('${item.trackerId}')" class="bg-dpGold hover:bg-dpGoldHover text-white px-4 py-2 rounded-lg font-bold text-xs">
+                        Save & Log Audit Trail
+                    </button>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-700 mb-2">Audit Trail Log</h4>
+                    <div class="space-y-1.5 max-h-36 overflow-y-auto">
+                        ${item.auditLog.map(a => `
+                            <div class="text-[11px] bg-slate-100 p-2 rounded border border-slate-200">
+                                <span class="text-slate-400 block text-[9px]">${a.time}</span>
+                                <span class="text-slate-800 font-medium">${a.note}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closePoliceModal() {
+            document.getElementById('police-modal').classList.add('hidden');
+        }
+
+        function savePoliceStatus(trackerId) {
+            const item = propertyDatabase.find(p => p.trackerId === trackerId);
+            if (!item) return;
+
+            const newStatus = parseInt(document.getElementById('update-status-select').value);
+            const note = document.getElementById('update-audit-note').value.trim();
+
+            item.statusCode = newStatus;
+            item.auditLog.unshift({
+                time: new Date().toLocaleString(),
+                note: note ? `Status changed to [${STATUS_STAGES[newStatus-1]}]: ${note}` : `Status changed to [${STATUS_STAGES[newStatus-1]}]`
+            });
+
+            showToast("Property status updated & audit logged.");
+            closePoliceModal();
+            renderPoliceDashboard();
+        }
+
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `px-4 py-3 rounded-xl shadow-lg text-xs font-bold text-white flex items-center gap-2 transition-all duration-300 transform translate-y-2 ${type === 'error' ? 'bg-red-600' : 'bg-dpNavy border-l-4 border-dpGold'}`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check text-dpGold'}"></i> ${message}`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
